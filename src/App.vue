@@ -1,19 +1,27 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Hello World, I am Volodka!)"/>
+  <div id="app" class="bg-light p-3">
+    <UserCard msg="Пащенко Володька"/>
+    <b-button variant="outline-primary" class="m-1">Войти</b-button>
+    <b-button variant="outline-primary">Выйти</b-button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import UserCard from './components/UserCard.vue'
+import Vue from 'vue'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    UserCard
   }
 }
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
 </script>
 
 <style>
@@ -23,6 +31,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
