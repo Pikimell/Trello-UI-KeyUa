@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header/>
-    <Columns :columns="cols"/>
+    <Columns :columns="cols" v-on:newColumn="addColumn"/>
   </div>
 </template>
 
@@ -16,12 +16,17 @@ export default {
   name: "MainPage",
   data(){
     return {
-      cols: ['first','second','col3','col4','col5','col6','col7','col']
+      cols: []
     }
   },
   components: {
     Columns,
     Header
+  },
+  methods:{
+    addColumn(title){
+      this.cols.push(title)
+    }
   }
 }
 
