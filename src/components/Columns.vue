@@ -1,9 +1,31 @@
 <template>
   <div class="--columns">
-    <Column v-for="col of columns" v-bind:title="col" :key="col.title"/>
+    <Column
+        v-for="col of columns"
+        v-bind:cards="col.cards"
+        v-bind:title="col.title"
+        v-bind:idColumn="col.idColumn"
+        :key="col.idColumn"/>
+
     <div id="add--col">
-      <b-form-input v-model="titleNewColumn" class="add--col--elem" placeholder="Enter title for new column"></b-form-input>
-      <BButton class="add--col--elem" v-on:click="$emit('newColumn', titleNewColumn)">Create Column</BButton>
+      <b-form-input
+          v-if="showInputTitle"
+          v-model="titleNewColumn"
+          class="add--col--elem"
+          placeholder="Enter title for new column"
+          :state="nameState">
+      </b-form-input>
+
+      <BButton
+          class="add--col--elem"
+          v-on:click="$emit('newColumn', {
+            title:titleNewColumn,
+            state:nameState
+          });titleNewColumn='';"
+      >
+        Create Column
+      </BButton>
+
     </div>
 
   </div>
@@ -13,7 +35,7 @@
 import Column from "./Column";
 export default {
   name: "Columns",
-  props:['columns'],
+  props:['columns','showInputTitle'],
   components:{
     Column
   },
@@ -21,20 +43,26 @@ export default {
     return {
       titleNewColumn: ''
     }
-  }
+  },computed: {
+    nameState() {
+      return this.titleNewColumn.length > 2 ? true : false
+    }
+  },
 }
 </script>
 
 <style scoped>
 .--columns{
   position: relative;
-  width: 100%;
   height: 100%;
-  background-color: grey;
+  background-color: rgba(155,155,155,0.3);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   flex-direction:row;
-  flex: 200px;
+  justify-content: flex-start;
+  align-content: flex-start;
+  width: 100%;
+  overflow-x: auto;
 }
 #add--col{
   height: 100%;
@@ -47,6 +75,7 @@ export default {
   border-radius: 10px;
   justify-content: center;
   flex-wrap: wrap;
+  min-width: 300px;
 }
 
 .add--col--elem{

@@ -1,7 +1,9 @@
 <template>
-  <div id="app">
-    <Header/>
-    <Columns :columns="cols" v-on:newColumn="addColumn"/>
+  <div id="app-body">
+    <Columns
+        :columns="cols"
+        v-on:newColumn="addColumn"
+        :showInputTitle="showInputTitle"/>
   </div>
 </template>
 
@@ -9,23 +11,32 @@
 import Vue from 'vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
-import Header from "../components/Header";
+
 import Columns from '../components/Columns'
 
 export default {
   name: "MainPage",
   data(){
     return {
-      cols: []
+      cols: [],
+      showInputTitle: false
     }
   },
   components: {
-    Columns,
-    Header
+    Columns
   },
   methods:{
-    addColumn(title){
-      this.cols.push(title)
+    addColumn(props){
+      if(this.showInputTitle){
+        if(props.state)
+          this.cols.push({
+          idColumn:'id' + (new Date()).getTime(),
+          title: props.title,
+          cards:[]
+        })
+        console.log(this.titleNewColumn);
+      }
+      this.showInputTitle = !this.showInputTitle;
     }
   }
 }
@@ -35,5 +46,32 @@ Vue.use(IconsPlugin)
 </script>
 
 <style scoped>
+#app-body{
+  max-width: 1920px;
+  overflow: scroll;
+}
+#app-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
+::-webkit-scrollbar {
+  height: 10px;
+  border-radius: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: silver;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>
