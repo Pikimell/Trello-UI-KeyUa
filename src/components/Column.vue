@@ -1,34 +1,142 @@
 <template>
 <span class="--column">
-  <span id="title"><h4>{{title}}</h4></span>
+
+  <div id="title"><h5>{{title}}</h5></div>
+
+  <div id="col--body">
+    <Card v-for="card of cards" v-bind:card="card" :key="card.idCard"/>
+  </div>
+
+
+  <div>
+    <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
+    <b-form-input
+        v-if="showAdd"
+        v-model="titleForNewCard"
+        class="inp--new-card"
+        placeholder="Enter title for new Card"
+        :state="nameState1"
+    />
+  </div>
+
+
+
 </span>
 </template>
 
 <script>
+import Card from "./Card";
 export default {
   name: "Column",
   props: {
-    title: String
-  }
+    idColumn: String,
+    title: String,
+    cards: Array
+  },
+  components:{
+    Card
+  },
+  methods:{
+    newCard(){
+      //AddCard
+      if(this.nameState1){
+        this.cards.push({
+          idColumn: "",
+          idCard: 'id' + (new Date()).getTime(),
+          title: this.titleForNewCard,
+          description: "Description"
+        });
+        this.titleForNewCard = '';
+        //Scroll
+        let container = this.$el.querySelector('#col--body')
+        container.scrollTop = container.scrollHeight;
+
+      }this.showAdd = !this.showAdd;
+
+
+    }
+  },
+  data(){
+    return {
+      showAdd: false,
+      titleForNewCard:''
+    }
+  },computed: {
+    nameState1() {
+      return this.titleForNewCard.length > 2 ? true : false
+    }
+  },
 }
+
+
 </script>
+
+
+
 
 <style scoped>
 .--column{
   margin: 1%;
   display: flex;
   width: 300px;
-  height: 500px;
+  height: 93%;
   background-color: silver;
-  overflow:auto;
-
+  min-width: 300px;
   flex-direction: column;
   align-content: center;
   justify-content: flex-start;
   border-radius: 10px;
+  border:1px solid grey;
 }
 
 #title{
-  background-color: #fff;
+  background-color: #222a41;
+  text-align: left;
+  padding-left: 10px;
+  padding-top: 10px;
+  word-wrap: break-word;
+  color:silver;
+  border-radius: 10px 10px 0 0;
+  border:1px solid grey;
+}
+
+#col--body{
+  min-height: 115px;
+  max-height: 700px;
+  overflow:auto;
+}
+
+.but--new-card{
+  margin: 10px;
+  height: 30px;
+  width: 276px;
+  font-size: 14px;
+}
+
+.inp--new-card{
+  margin: 0 10px 10px 10px;
+  height: 30px;
+  width: 276px;
+  font-size: 14px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: silver;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
