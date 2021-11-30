@@ -1,20 +1,32 @@
 <template>
-  <div id="app" class="bg-light p-3">
-    <UserCard msg="Username"/>
-    <b-button variant="outline-primary" class="m-1">LogIn</b-button>
-    <b-button variant="outline-primary">logOut</b-button>
+  <div id="app">
+    <Header/>
+    <Columns :columns="cols" v-on:newColumn="addColumn"/>
   </div>
 </template>
 
 <script>
-import UserCard from '../components/UserCard.vue'
 import Vue from 'vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
+import Header from "../components/Header";
+import Columns from '../components/Columns'
+
 export default {
   name: "MainPage",
+  data(){
+    return {
+      cols: []
+    }
+  },
   components: {
-    UserCard
+    Columns,
+    Header
+  },
+  methods:{
+    addColumn(title){
+      this.cols.push(title)
+    }
   }
 }
 
