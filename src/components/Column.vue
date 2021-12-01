@@ -1,12 +1,13 @@
 <template>
 <span class="--column">
 
-  <div id="title"><h5>{{title}}</h5></div>
+  <div id="title"><h5>{{ title }}</h5></div>
 
   <div id="col--body">
-    <Card v-for="card of cards" v-bind:card="card" :key="card.idCard"/>
+    <Card v-for="card of cards"
+          v-bind:card="card"
+          :key="card.idCard"/>
   </div>
-
 
   <div>
     <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
@@ -19,13 +20,12 @@
     />
   </div>
 
-
-
 </span>
 </template>
 
 <script>
 import Card from "./Card";
+
 export default {
   name: "Column",
   props: {
@@ -33,37 +33,38 @@ export default {
     title: String,
     cards: Array
   },
-  components:{
+  components: {
     Card
   },
-  methods:{
-    newCard(){
+  methods: {
+    newCard() {
       //AddCard
-      if(this.nameState1){
+      if (this.nameState1) {
         this.cards.push({
           idColumn: "",
           idCard: 'id' + (new Date()).getTime(),
           title: this.titleForNewCard,
-          description: "Description"
+          description: ''
         });
         this.titleForNewCard = '';
         //Scroll
         let container = this.$el.querySelector('#col--body')
         container.scrollTop = container.scrollHeight;
 
-      }this.showAdd = !this.showAdd;
-
-
+      }
+      this.showAdd = !this.showAdd;
     }
   },
-  data(){
+  data() {
     return {
       showAdd: false,
-      titleForNewCard:''
+      titleForNewCard: '',
+      cardDescription: ''
     }
-  },computed: {
+  }, computed: {
     nameState1() {
-      return this.titleForNewCard.length > 2 ? true : false
+      let len = this.titleForNewCard.length
+      return len > 2? true : false
     }
   },
 }
@@ -72,10 +73,8 @@ export default {
 </script>
 
 
-
-
 <style scoped>
-.--column{
+.--column {
   margin: 1%;
   display: flex;
   width: 300px;
@@ -86,34 +85,34 @@ export default {
   align-content: center;
   justify-content: flex-start;
   border-radius: 10px;
-  border:1px solid grey;
+  border: 1px solid grey;
 }
 
-#title{
+#title {
   background-color: #222a41;
   text-align: left;
   padding-left: 10px;
   padding-top: 10px;
   word-wrap: break-word;
-  color:silver;
+  color: silver;
   border-radius: 10px 10px 0 0;
-  border:1px solid grey;
+  border: 1px solid grey;
 }
 
-#col--body{
+#col--body {
   min-height: 115px;
   max-height: 700px;
-  overflow:auto;
+  overflow: auto;
 }
 
-.but--new-card{
+.but--new-card {
   margin: 10px;
   height: 30px;
   width: 276px;
   font-size: 14px;
 }
 
-.inp--new-card{
+.inp--new-card {
   margin: 0 10px 10px 10px;
   height: 30px;
   width: 276px;

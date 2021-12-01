@@ -34,7 +34,6 @@ export default {
           title: props.title,
           cards:[]
         })
-        console.log(this.titleNewColumn);
       }
       this.showInputTitle = !this.showInputTitle;
     }
