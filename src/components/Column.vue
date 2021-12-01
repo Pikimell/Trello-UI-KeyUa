@@ -1,7 +1,21 @@
 <template>
 <span class="--column">
 
-  <div id="title"><h5>{{ title }}</h5></div>
+  <div id="col-header" v-on:click:="console.log('OK')">
+    <h5 class="col-title">{{ title }}</h5>
+
+    <div>
+      <BButton v-on:click="delColumn"
+               pill class="col-del"
+               size="sm"
+               variant="outline-secondary">✎</BButton>
+      <BButton v-on:click="editColumn"
+               pill class="col-del"
+               size="sm"
+               variant="outline-secondary">✕</BButton>
+    </div>
+
+  </div>
 
   <div id="col--body">
     <Card v-for="card of cards"
@@ -53,6 +67,12 @@ export default {
 
       }
       this.showAdd = !this.showAdd;
+    },
+    editColumn(){
+
+    },
+    delColumn(){
+
     }
   },
   data() {
@@ -64,7 +84,7 @@ export default {
   }, computed: {
     nameState1() {
       let len = this.titleForNewCard.length
-      return len > 2? true : false
+      return len > 2
     }
   },
 }
@@ -88,21 +108,33 @@ export default {
   border: 1px solid grey;
 }
 
-#title {
+#col-header {
   background-color: #222a41;
   text-align: left;
   padding-left: 10px;
-  padding-top: 10px;
   word-wrap: break-word;
   color: silver;
   border-radius: 10px 10px 0 0;
   border: 1px solid grey;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 #col--body {
   min-height: 115px;
   max-height: 700px;
   overflow: auto;
+}
+
+.col-del{
+  width: 20px;
+  height: 20px;
+  max-height: 20px;
+  max-width: 20px;
+  padding: 0;
+  font-size: 10px;
+  margin: 10px;
 }
 
 .but--new-card {
@@ -119,6 +151,9 @@ export default {
   font-size: 14px;
 }
 
+.col-title{
+  margin:10px
+}
 ::-webkit-scrollbar {
   width: 5px;
   border-radius: 5px;
