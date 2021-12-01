@@ -33,52 +33,56 @@
 
 <script>
 import Column from "./Column";
+
 export default {
   name: "Columns",
-  props:['columns','showInputTitle'],
-  components:{
+  props: ['columns', 'showInputTitle'],
+  components: {
     Column
   },
-  data(){
+  data() {
     return {
       titleNewColumn: ''
     }
-  },computed: {
+  },
+  computed: {
     nameState() {
       return this.titleNewColumn.length > 2 ? true : false
     }
-  },
+  }
+  ,
 }
 </script>
 
 <style scoped>
-.--columns{
+.--columns {
   position: relative;
   height: 100%;
-  background-color: rgba(155,155,155,0.3);
+  background-color: rgba(155, 155, 155, 0.3);
   display: flex;
   flex-wrap: nowrap;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: flex-start;
   align-content: flex-start;
   width: 100%;
   overflow-x: auto;
 }
-#add--col{
+
+#add--col {
   height: 100%;
-  width:300px;
+  width: 300px;
   margin: 1%;
   display: flex;
   flex-direction: column;
   padding: 1%;
-  background: rgba(50,50,50,0.3);
+  background: rgba(50, 50, 50, 0.3);
   border-radius: 10px;
   justify-content: center;
   flex-wrap: wrap;
   min-width: 300px;
 }
 
-.add--col--elem{
+.add--col--elem {
   margin-top: 10px;
 }
 </style>
