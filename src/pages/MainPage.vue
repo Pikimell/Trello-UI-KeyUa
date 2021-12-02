@@ -1,42 +1,26 @@
 <template>
   <div id="app-body">
-    <Columns
-        :columns="cols"
-        v-on:newColumn="addColumn"
-        :showInputTitle="showInputTitle"/>
+    <Columns />
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {} from 'vuex'
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
 import Columns from '../components/Columns'
 
 export default {
   name: "MainPage",
-  data(){
+  data() {
     return {
-      cols: [],
       showInputTitle: false
     }
   },
   components: {
     Columns
-  },
-  methods:{
-    addColumn(props){
-      if(this.showInputTitle){
-        if(props.state)
-          this.cols.push({
-          idColumn:'id' + (new Date()).getTime(),
-          title: props.title,
-          cards:[]
-        })
-      }
-      this.showInputTitle = !this.showInputTitle;
-    }
   }
 }
 
@@ -45,10 +29,11 @@ Vue.use(IconsPlugin)
 </script>
 
 <style scoped>
-#app-body{
+#app-body {
   max-width: 1920px;
   overflow: scroll;
 }
+
 #app-body::-webkit-scrollbar {
   width: 0;
   height: 0;
