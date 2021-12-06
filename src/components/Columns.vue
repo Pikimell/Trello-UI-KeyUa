@@ -1,7 +1,7 @@
 <template>
   <div class="--columns">
     <Column
-        v-for="col of this.COLUMNS.values()"
+        v-for="col of this.COLUMNS"
         v-bind:title="col.title"
         v-bind:idColumn="col.idColumn"
         :key="col.idColumn"/>
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'COLUMNS'
+        'COLUMNS'
     ]),
     nameState() {
       return this.titleNewColumn.length > 2

@@ -69,8 +69,8 @@ export default {
       this.edited = !this.edited;
     },
     delCol(){
-      let cardsCol = this.CARDS.filter(card=>card.idColumn === this.idColumn)
-      cardsCol.forEach(x=>{this.delCard(x.idCard)})
+      //let cardsCol = this.CARDS.filter(card=>card.idColumn === this.idColumn)
+      //cardsCol.forEach(x=>{this.delCard(x.idCard)})
       this.delColumn(this.idColumn)
     },
     newCard() {
