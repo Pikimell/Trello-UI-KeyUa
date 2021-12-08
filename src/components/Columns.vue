@@ -1,8 +1,7 @@
 <template>
   <div class="--columns">
     <Column
-        v-for="col of columns"
-        v-bind:cards="col.cards"
+        v-for="col of this.COLUMNS"
         v-bind:title="col.title"
         v-bind:idColumn="col.idColumn"
         :key="col.idColumn"/>
@@ -18,7 +17,7 @@
 
       <BButton
           class="add--col--elem"
-          v-on:click="$emit('newColumn', {
+          v-on:click="addColumn({
             title:titleNewColumn,
             state:nameState
           });titleNewColumn='';"
@@ -33,24 +32,42 @@
 
 <script>
 import Column from "./Column";
+import {mapGetters,mapActions} from "vuex";
 
 export default {
   name: "Columns",
-  props: ['columns', 'showInputTitle'],
   components: {
     Column
   },
   data() {
     return {
-      titleNewColumn: ''
+      titleNewColumn: '',
+      showInputTitle: false
     }
   },
   computed: {
+    ...mapGetters([
+        'COLUMNS'
+    ]),
     nameState() {
-      return this.titleNewColumn.length > 2 ? true : false
+      return this.titleNewColumn.length > 2
+    }
+  },
+  methods:{
+    ...mapActions([
+      'pushColumn'
+    ]),
+    addColumn(props) {
+      if (this.showInputTitle) {
+        if (props.state)
+          this.pushColumn({
+            idColumn: 'id' + (new Date()).getTime(),
+            title: props.title
+          })
+      }
+      this.showInputTitle = !this.showInputTitle;
     }
   }
-  ,
 }
 </script>
 

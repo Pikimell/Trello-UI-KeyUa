@@ -8,11 +8,21 @@
           id="inp-title"
           placeholder="Enter new title"
       />
-      <b-button size="sm" id="ed-but"
-                @click="editCard"
-                variant="outline-secondary">
-        {{ dataBut }}
-      </b-button>
+      <div>
+        <b-button size="sm" class="-but"
+                  @click="editCard"
+                  variant="outline-secondary">
+          {{ dataBut }}
+        </b-button>
+
+        <b-button size="sm" class="-but"
+                  @click="deleteCard"
+                  variant="outline-secondary">
+          ✕
+        </b-button>
+      </div>
+
+
     </div>
     <div id="card--body">
       <p v-if="!edited && this.card.description.length > 0">{{ card.description }}</p>
@@ -32,6 +42,7 @@
 
 <script>
 import Vue from "vue";
+import {mapActions} from "vuex";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 
 export default {
@@ -39,14 +50,33 @@ export default {
   props: ['card'],
   computed: {},
   methods: {
+    ...mapActions([
+       'editDescCard','editTitleCard','delCard'
+    ]),
     addDecs() {
-      this.card.description = "Default Description";
+      this.editDescCard({
+        idCard: this.card.idCard,
+        desc: 'Default Description'
+      })
+    },deleteCard() {
+      this.delCard(this.card.idCard)
     },
     editCard() {
       if (this.edited) {
         this.dataBut = '✎';
-        this.card.title = this.newTitle;
-        this.card.description = this.newDescription;
+
+        if(this.card.title !== this.newTitle)
+        this.editTitleCard({
+          idCard: this.card.idCard,
+          title: this.newTitle
+        })
+
+        if(this.card.description !== this.newDescription)
+        this.editDescCard({
+          idCard: this.card.idCard,
+          desc: this.newDescription
+        })
+
       } else {
         this.dataBut = '✔';
         this.newTitle = this.card.title;
@@ -96,6 +126,8 @@ Vue.use(IconsPlugin)
 #inp-title {
   margin-right: 10px;
   height: 32px;
+  font-size: 20px;
+  max-width: 180px;
 }
 
 #inp-desc {
@@ -104,13 +136,22 @@ Vue.use(IconsPlugin)
   min-height: 100px;
 }
 
-#ed-but {
+.-but {
   max-height: 32px;
+  margin-left: 5px;
+  padding: 0 5px 0 5px;
 }
 
 p {
   text-align: left;
   padding: 0 10px 0 10px;
   word-wrap: break-word;
+}
+
+h4{
+  text-overflow: ellipsis;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
