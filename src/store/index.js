@@ -88,7 +88,8 @@ export default new Vuex.Store({
         pushColumn: ({commit}, column) => {
             axios.post(ENDPOINT + '/pushColumn', {
                 idColumn: column.idColumn,
-                title: column.title
+                title: column.title,
+                index: column.index
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushColumn', column);
@@ -102,7 +103,8 @@ export default new Vuex.Store({
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
-                description: card.description
+                description: card.description,
+                index: card.index
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushCard', card)
@@ -134,7 +136,8 @@ export default new Vuex.Store({
             axios.put(ENDPOINT + `/updateCard/${props.idCard}`,{
                 idCard: props.idCard,
                 title: props.title,
-                description: props.desc
+                description: props.desc,
+                index: props.index
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('editCard', props)
@@ -144,7 +147,8 @@ export default new Vuex.Store({
         },
         editTitleCol: ({commit}, props) => {
             axios.put(ENDPOINT + `/updateColumn/${props.idColumn}`, {
-                title: props.title
+                title: props.title,
+                index: props.index
             }).then(response => {
                 if (response.statusText === "OK")
                     commit('editTitleCol', props)
@@ -155,7 +159,15 @@ export default new Vuex.Store({
     },
     getters: {
         COLUMNS(state) {
-            return state.cols;
+            return state.cols.sort( (a, b) => {
+                if (a.index > b.index) {
+                    return 1;
+                }
+                if (a.index < b.index) {
+                    return -1;
+                }
+                return 0;
+            });
         },
         CARDS(state) {
             return state.cards;

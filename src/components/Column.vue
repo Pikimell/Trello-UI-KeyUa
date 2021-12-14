@@ -22,7 +22,15 @@
   </div>
 
   <div id="col--body">
-    <Card v-for="card of this.CARDS.filter(x=>x.idColumn === this.idColumn)"
+    <Card v-for="card of this.CARDS.filter(x=>x.idColumn === this.idColumn).sort( (a, b) => {
+                if (a.index > b.index) {
+                    return 1;
+                }
+                if (a.index < b.index) {
+                    return -1;
+                }
+                return 0;
+            })"
           v-bind:card="card"
           :key="card.idCard"/>
   </div>
@@ -75,6 +83,9 @@ export default {
     },
     newCard() {
       //AddCard
+      //let col = this.CARDS;
+      //let len = col.length;
+      //let ind = (len>0)?col[len-1].index+1:0;
       if (this.nameState1) {
         this.pushCard({
           idColumn: this.idColumn,

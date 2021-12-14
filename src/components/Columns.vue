@@ -1,10 +1,14 @@
 <template>
   <div class="--columns">
-    <Column
-        v-for="col of this.COLUMNS"
-        v-bind:title="col.title"
-        v-bind:idColumn="col.idColumn"
-        :key="col.idColumn"/>
+    <draggable
+        class="drag" :list="this.COLUMNS" group="tasks"
+        v-bind="dragOptions">
+      <Column
+          v-for="col of this.COLUMNS"
+          v-bind:title="col.title"
+          v-bind:idColumn="col.idColumn"
+          :key="col.idColumn"/>
+    </draggable>
 
     <div id="add--col">
       <b-form-input
@@ -26,29 +30,38 @@
       </BButton>
 
     </div>
-
   </div>
 </template>
 
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
+import draggable from 'vuedraggable'
 
 export default {
   name: "Columns",
   data() {
     return {
       titleNewColumn: '',
-      showInputTitle: false
+      showInputTitle: false,
+      editable: false
     }
   },
   components: {
-    Column
+    Column,draggable
   },
   computed: {
     ...mapGetters([
         'COLUMNS'
     ]),
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "cards",
+        disabled: !this.editable,
+        ghostClass: "ghost"
+      };
+    },
     nameState() {
       return this.titleNewColumn.length > 2
     }
@@ -58,11 +71,15 @@ export default {
       'pushColumn','loadCards',"loadColumns"
     ]),
     addColumn(props) {
+      let col = this.COLUMNS;
+      let len = col.length;
+      let ind = (len>0)?col[len-1].index+1:0;
       if (this.showInputTitle) {
         if (props.state)
           this.pushColumn({
             idColumn: 'id' + (new Date()).getTime(),
-            title: props.title
+            title: props.title,
+            index: ind
           })
       }
       this.showInputTitle = !this.showInputTitle;
@@ -77,7 +94,7 @@ export default {
 
 <style scoped>
 .--columns {
-  position: relative;
+  
   height: 100%;
   background-color: rgba(155, 155, 155, 0.3);
   display: flex;
@@ -101,6 +118,16 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   min-width: 300px;
+}
+
+.drag{
+  display: flex;
+  margin-right: 10px;
+}
+
+.ghost {
+  opacity: 0.5;
+  background-color: #000;
 }
 
 .add--col--elem {
