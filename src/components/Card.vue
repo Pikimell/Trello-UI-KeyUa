@@ -51,12 +51,13 @@ export default {
   computed: {},
   methods: {
     ...mapActions([
-       'editDescCard','editTitleCard','delCard'
+       'updateCard','delCard'
     ]),
     addDecs() {
-      this.editDescCard({
+      this.updateCard({
         idCard: this.card.idCard,
-        desc: 'Default Description'
+        title: this.card.title,
+        desc: 'Default description'
       })
     },deleteCard() {
       this.delCard(this.card.idCard)
@@ -65,15 +66,9 @@ export default {
       if (this.edited) {
         this.dataBut = '✎';
 
-        if(this.card.title !== this.newTitle)
-        this.editTitleCard({
+        this.updateCard({
           idCard: this.card.idCard,
-          title: this.newTitle
-        })
-
-        if(this.card.description !== this.newDescription)
-        this.editDescCard({
-          idCard: this.card.idCard,
+          title: this.newTitle,
           desc: this.newDescription
         })
 

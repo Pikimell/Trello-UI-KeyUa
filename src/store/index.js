@@ -42,10 +42,11 @@ export default new Vuex.Store({
             let index = state.cards.findIndex(isPrime);
             state.cards.splice(index, 1)
         },
-        editTitleCard: (state, {idCard, title}) => {
+        editCard: (state, {idCard, title,desc}) => {
             for (let i = 0; i < state.cards.length; i++) {//TODO
                 if (state.cards[i].idCard === idCard) {
                     state.cards[i].title = title;
+                    state.cards[i].description = desc
                     break;
                 }
             }
@@ -54,14 +55,6 @@ export default new Vuex.Store({
             for (let i = 0; i < state.cols.length; i++) {//TODO
                 if (state.cols[i].idColumn === idColumn) {
                     state.cols[i].title = title;
-                    break;
-                }
-            }
-        },
-        editDescCard: (state, {idCard, desc}) => {
-            for (let i = 0; i < state.cards.length; i++) {//TODO
-                if (state.cards[i].idCard === idCard) {
-                    state.cards[i].description = desc;
                     break;
                 }
             }
@@ -118,13 +111,13 @@ export default new Vuex.Store({
             });
         },
         delColumn: ({commit}, idColumn) => {
-            axios.delete(ENDPOINT + `/deleteColumn/${idColumn}`).then(function (response) {
-                if (response.statusText === "OK") {
-                    commit('delColumn', idColumn)
-
-                    //TODO delete cards of columns
-                }
-            }).catch(function (error) {
+            axios.delete(ENDPOINT + `/deleteColumn/${idColumn}`)
+                .then(function (response) {
+                    if (response.statusText === "OK") {
+                        commit('delColumn', idColumn)
+                        //TODO delete cards of columns
+                    }
+                }).catch(function (error) {
                 console.log(error);
             });
         },
@@ -137,22 +130,27 @@ export default new Vuex.Store({
             });
 
         },
-        editTitleCard: ({commit}, props) => {
-            commit('editTitleCard', props)
+        updateCard: ({commit}, props) => {
+            axios.put(ENDPOINT + `/updateCard/${props.idCard}`,{
+                idCard: props.idCard,
+                title: props.title,
+                description: props.desc
+            }).then(function (response) {
+                if (response.statusText === "OK")
+                    commit('editCard', props)
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         editTitleCol: ({commit}, props) => {
             axios.put(ENDPOINT + `/updateColumn/${props.idColumn}`, {
                 title: props.title
             }).then(response => {
-                console.log(response);
-                commit('editTitleColumn', props)
+                if (response.statusText === "OK")
+                    commit('editTitleCol', props)
             }).catch(error => {
                 console.log(error);
             });
-            commit('editTitleCol', props)
-        },
-        editDescCard: ({commit}, props) => {
-            commit('editDescCard', props)
         }
     },
     getters: {
