@@ -36,14 +36,14 @@ import {mapGetters,mapActions} from "vuex";
 
 export default {
   name: "Columns",
-  components: {
-    Column
-  },
   data() {
     return {
       titleNewColumn: '',
       showInputTitle: false
     }
+  },
+  components: {
+    Column
   },
   computed: {
     ...mapGetters([
@@ -55,7 +55,7 @@ export default {
   },
   methods:{
     ...mapActions([
-      'pushColumn'
+      'pushColumn','loadCards',"loadColumns"
     ]),
     addColumn(props) {
       if (this.showInputTitle) {
@@ -67,6 +67,10 @@ export default {
       }
       this.showInputTitle = !this.showInputTitle;
     }
+  },
+  beforeMount() {
+    this.loadColumns()
+    this.loadCards()
   }
 }
 </script>
