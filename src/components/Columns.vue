@@ -1,16 +1,17 @@
 <template>
-  <div class="--columns">
+  <div class="columns-container">
     <draggable
-        class="drag" :list="this.COLUMNS" group="tasks"
-        v-bind="dragOptions">
+        class="--columns"
+        v-bind="dragOptions"
+        @end="moveCol">
       <Column
-          v-for="col of this.COLUMNS"
-          v-bind:title="col.title"
+          v-for="col in this.COLUMNS"
           v-bind:idColumn="col.idColumn"
-          :key="col.idColumn"/>
+          v-bind:title="col.title"
+          v-bind:key="col.idColumn"
+      />
     </draggable>
-
-    <div id="add--col">
+    <div id="add--col" slot="header" >
       <b-form-input
           v-if="showInputTitle"
           v-model="titleNewColumn"
@@ -31,12 +32,14 @@
 
     </div>
   </div>
+
 </template>
 
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
 import draggable from 'vuedraggable'
+
 
 export default {
   name: "Columns",
@@ -57,8 +60,8 @@ export default {
     dragOptions() {
       return {
         animation: 0,
-        group: "cards",
-        disabled: !this.editable,
+        group: "description",
+        disabled: false,
         ghostClass: "ghost"
       };
     },
@@ -67,8 +70,16 @@ export default {
     }
   },
   methods:{
+    moveCol(data){
+      let props = {
+        idColumn: this.idColumn,
+        oldIndex: data.oldIndex,
+        newIndex: data.newIndex
+      }
+      this.indexingColumns(props)
+    },
     ...mapActions([
-      'pushColumn','loadCards',"loadColumns"
+      'pushColumn','loadCards',"loadColumns","indexingColumns"
     ]),
     addColumn(props) {
       let col = this.COLUMNS;
@@ -93,17 +104,30 @@ export default {
 </script>
 
 <style scoped>
-.--columns {
-  
-  height: 100%;
-  background-color: rgba(155, 155, 155, 0.3);
+
+.columns-container{
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
   justify-content: flex-start;
   align-content: flex-start;
-  width: 100%;
   overflow-x: auto;
+  margin:0;
+  padding:0;
+  background-color: rgba(155, 155, 155, 0.3);
+  width: 100%;
+}
+
+.--columns {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  overflow-x: auto;
+  height: 100%;
+  min-height: 239px;
+  min-width: 1280px;
 }
 
 #add--col {
@@ -120,13 +144,9 @@ export default {
   min-width: 300px;
 }
 
-.drag{
-  display: flex;
-  margin-right: 10px;
-}
 
 .ghost {
-  opacity: 0.5;
+  opacity: 0;
   background-color: #000;
 }
 

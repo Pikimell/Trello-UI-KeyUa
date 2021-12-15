@@ -82,10 +82,6 @@ export default {
       this.delColumn(this.idColumn)
     },
     newCard() {
-      //AddCard
-      //let col = this.CARDS;
-      //let len = col.length;
-      //let ind = (len>0)?col[len-1].index+1:0;
       if (this.nameState1) {
         this.pushCard({
           idColumn: this.idColumn,

@@ -58,13 +58,33 @@ export default new Vuex.Store({
                     break;
                 }
             }
+        },
+        indexingColumns: (state, {idColumn, oldIndex, newIndex}) => {
+            console.log(oldIndex, '----',newIndex)
+            function isPrime(column) {
+                return column.idColumn === idColumn
+            }
+            let index = state.cols.findIndex(isPrime);
+            if(index!=-1){
+                let col = state.cols[index];col.index = newIndex
+                state.cols = state.cols.splice(index,1)
+                state.cols.insert(newIndex, col)
+            }
         }
     },
     actions: {
         loadColumns: ({commit}) => {
             axios.get(ENDPOINT + '/getColumns')
                 .then(function (response) {
-                    commit('loadColumns', response.data.Items.reverse())
+                    commit('loadColumns', response.data.Items.sort( (a, b) => {
+                        if (a.index > b.index) {
+                            return 1;
+                        }
+                        if (a.index < b.index) {
+                            return -1;
+                        }
+                        return 0;
+                    }))
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -84,6 +104,9 @@ export default new Vuex.Store({
                 });
         },
 
+        indexingColumns: ({commit}, data) => {
+            commit('indexingColumns', data)
+        },
 
         pushColumn: ({commit}, column) => {
             axios.post(ENDPOINT + '/pushColumn', {
@@ -159,15 +182,7 @@ export default new Vuex.Store({
     },
     getters: {
         COLUMNS(state) {
-            return state.cols.sort( (a, b) => {
-                if (a.index > b.index) {
-                    return 1;
-                }
-                if (a.index < b.index) {
-                    return -1;
-                }
-                return 0;
-            });
+            return state.cols
         },
         CARDS(state) {
             return state.cards;
