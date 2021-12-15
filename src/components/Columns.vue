@@ -16,7 +16,7 @@
           class="btn-group list-group-item"
           role="group"
           aria-label="Basic example"
-          key="footer">
+          key="footer" v-bind:draggable="false">
         <b-form-input
             v-if="showInputTitle"
             v-model="titleNewColumn"
@@ -81,6 +81,7 @@ export default {
         oldIndex: data.oldIndex,
         newIndex: data.newIndex
       }
+      console.log(props.oldIndex,"---",props.newIndex)
       this.indexingColumns(props)
     },
     ...mapActions([

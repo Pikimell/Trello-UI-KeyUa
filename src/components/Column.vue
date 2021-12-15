@@ -72,7 +72,7 @@ export default {
         oldIndex: data.oldIndex,
         newIndex: data.newIndex
       }
-      console.log(props)
+      console.log(props.oldIndex,"---",props.newIndex)
       //this.indexingColumns(props)
     },
     editTitleColumn() {
