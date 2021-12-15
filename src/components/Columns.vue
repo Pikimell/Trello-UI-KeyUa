@@ -151,8 +151,8 @@ export default {
 
 
 .ghost {
-  opacity: 0;
-  background-color: #000;
+  opacity: 0.1;
+  background-color: rgba(150,255,150,50%);
 }
 
 .add--col--elem {
