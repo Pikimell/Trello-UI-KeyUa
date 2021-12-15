@@ -3,17 +3,17 @@
 
   <div id="col-header">
     <b-form-input class="col-title" id="inp-title"
-      v-if="this.edited"
-    v-model="edTitle"/>
+                  v-if="this.edited"
+                  v-model="edTitle"/>
     <h5 class="col-title" id="out-title"
-      v-else>{{ edTitle }}</h5>
+        v-else>{{ edTitle }}</h5>
 
     <div>
       <BButton @click="this.editTitleColumn"
                pill class="col-del"
                size="sm"
-               variant="outline-secondary">{{dataBut}}</BButton>
-      <BButton  @click="this.delCol"
+               variant="outline-secondary">{{ dataBut }}</BButton>
+      <BButton @click="this.delCol"
                pill class="col-del"
                size="sm"
                variant="outline-secondary">✕</BButton>
@@ -21,8 +21,10 @@
 
   </div>
 
-  <div id="col--body">
-    <Card v-for="card of this.CARDS.filter(x=>x.idColumn === this.idColumn).sort( (a, b) => {
+    <draggable id="col--body"
+        v-bind="dragOptions"
+        @end="moveCard">
+      <Card v-for="card of this.CARDS.filter(x=>x.idColumn === this.idColumn).sort( (a, b) => {
                 if (a.index > b.index) {
                     return 1;
                 }
@@ -33,7 +35,7 @@
             })"
           v-bind:card="card"
           :key="card.idCard"/>
-  </div>
+    </draggable>
 
   <div>
     <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
@@ -50,35 +52,48 @@
 </template>
 
 <script>
-import {mapGetters,mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
+import draggable from 'vuedraggable'
 import Card from "./Card";
+
 export default {
   name: "Column",
-  props: ['idColumn','title'],
+  props: ['idColumn', 'title'],
   components: {
-    Card
+    Card,draggable
   },
   methods: {
     ...mapActions([
-       'pushCard','delColumn','editTitleCol','delCard'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard',
     ]),
-    editTitleColumn(){
+    moveCard(data){
+      let props = {
+        idColumn: this.idColumn,
+        oldIndex: data.oldIndex,
+        newIndex: data.newIndex
+      }
+      console.log(props)
+      //this.indexingColumns(props)
+    },
+    editTitleColumn() {
       if (this.edited) {
         this.dataBut = '✎';
-        if(this.title !== this.edTitle)
-        this.editTitleCol({
-          idColumn:this.idColumn,
-          title:this.edTitle
-        })
+        if (this.title !== this.edTitle)
+          this.editTitleCol({
+            idColumn: this.idColumn,
+            title: this.edTitle
+          })
       } else {
         this.dataBut = '✔';
         this.newTitle = this.edTitle;
       }
       this.edited = !this.edited;
     },
-    delCol(){
-      let cardsCol = this.CARDS.filter(card=>card.idColumn === this.idColumn)
-      cardsCol.forEach(x=>{this.delCard(x.idCard)})
+    delCol() {
+      let cardsCol = this.CARDS.filter(card => card.idColumn === this.idColumn)
+      cardsCol.forEach(x => {
+        this.delCard(x.idCard)
+      })
       this.delColumn(this.idColumn)
     },
     newCard() {
@@ -86,6 +101,7 @@ export default {
         this.pushCard({
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
+          index: this.CARDS.length,
           title: this.titleForNewCard,
           description: ''
         })
@@ -107,8 +123,16 @@ export default {
     }
   }, computed: {
     ...mapGetters([
-       'CARDS'
+      'CARDS'
     ]),
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "cards",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    },
     nameState1() {
       let len = this.titleForNewCard.length
       return len > 2
@@ -135,6 +159,10 @@ export default {
   border: 1px solid grey;
 }
 
+.ghost{
+  background-color: rgba(255,150,150,30%);
+}
+
 #col-header {
   background-color: #222a41;
   text-align: left;
@@ -154,7 +182,7 @@ export default {
   overflow: auto;
 }
 
-#inp-title{
+#inp-title {
   margin: 7px 0 7px 0;
   width: 200px;
   height: 30px;
@@ -164,7 +192,7 @@ export default {
   background-color: rgba(35, 42, 65, 0.99);
 }
 
-#out-title{
+#out-title {
   word-wrap: break-word;
   text-overflow: ellipsis;
   max-width: 185px;
@@ -172,7 +200,7 @@ export default {
   overflow: hidden;
 }
 
-.col-del{
+.col-del {
   width: 20px;
   height: 20px;
   max-height: 20px;
@@ -196,12 +224,13 @@ export default {
   font-size: 14px;
 }
 
-.col-title{
-  margin:10px;
+.col-title {
+  margin: 10px;
   max-width: 200px;
   max-height: 30px;
   text-overflow: ellipsis;
 }
+
 ::-webkit-scrollbar {
   width: 5px;
   border-radius: 5px;

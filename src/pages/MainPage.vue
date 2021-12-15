@@ -30,7 +30,6 @@ Vue.use(IconsPlugin)
 
 <style scoped>
 #app-body {
-  max-width: 1920px;
   overflow: scroll;
 }
 

@@ -56,6 +56,7 @@ export default {
     addDecs() {
       this.updateCard({
         idCard: this.card.idCard,
+        index: this.card.index,
         title: this.card.title,
         desc: 'Default description'
       })

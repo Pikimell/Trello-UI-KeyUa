@@ -10,29 +10,34 @@
           v-bind:title="col.title"
           v-bind:key="col.idColumn"
       />
-    </draggable>
-    <div id="add--col" slot="header" >
-      <b-form-input
-          v-if="showInputTitle"
-          v-model="titleNewColumn"
-          class="add--col--elem"
-          placeholder="Enter title for new column"
-          :state="nameState">
-      </b-form-input>
+      <div
+          id="add--col"
+          slot="footer"
+          class="btn-group list-group-item"
+          role="group"
+          aria-label="Basic example"
+          key="footer">
+        <b-form-input
+            v-if="showInputTitle"
+            v-model="titleNewColumn"
+            class="add--col--elem"
+            placeholder="Enter title for new column"
+            :state="nameState">
+        </b-form-input>
 
-      <BButton
-          class="add--col--elem"
-          v-on:click="addColumn({
+        <BButton
+            class="add--col--elem"
+            v-on:click="addColumn({
             title:titleNewColumn,
             state:nameState
           });titleNewColumn='';"
-      >
-        Create Column
-      </BButton>
+        >
+          Create Column
+        </BButton>
 
-    </div>
+      </div>
+    </draggable>
   </div>
-
 </template>
 
 <script>
@@ -60,7 +65,7 @@ export default {
     dragOptions() {
       return {
         animation: 0,
-        group: "description",
+        group: "columns",
         disabled: false,
         ghostClass: "ghost"
       };
@@ -124,7 +129,6 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   align-content: flex-start;
-  overflow-x: auto;
   height: 100%;
   min-height: 239px;
   min-width: 1280px;
