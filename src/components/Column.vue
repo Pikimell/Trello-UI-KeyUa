@@ -1,5 +1,5 @@
 <template>
-<div class="--column" v-bind:title="this.idColumn">
+<div class="--column">
 
   <div id="col-header">
     <b-form-input class="col-title" id="inp-title"

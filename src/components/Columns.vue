@@ -29,9 +29,10 @@
     <draggable
         class="--columns"
         v-bind="dragOptions"
+        :list="SORT_COLUMNS"
         @end="moveCol">
       <Column
-          v-for="col in this.COLUMNS_SORT"
+          v-for="col in this.SORT_COLUMNS"
           v-bind:idColumn="col.idColumn"
           v-bind:title="col.title"
           v-bind:key="col.idColumn"
@@ -68,7 +69,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-        'COLUMNS_SORT'
+        'SORT_COLUMNS'
     ]),
     dragOptions() {
       return {
@@ -91,39 +92,23 @@ export default {
         container.scrollLeft = container.scrollWidth;
       }
     },
-    moveCol(data){
-      let copyCols = this.COLUMNS_SORT;
-      let props = {
-        idColumn: data.item.title,
-        newIndex: data.newIndex
-      }
-      if(data.newIndex === 0){
-        props.newIndex = copyCols[0].indexColumn-1;
-      }else if(data.newIndex === copyCols.length-1){
-        props.newIndex = copyCols[copyCols.length-1].indexColumn+1;
-      }else{
-        let predIndex = copyCols[data.newIndex-1].indexColumn;
-        let nextIndex = copyCols[data.newIndex+1].indexColumn;
-        props.newIndex = nextIndex - ((nextIndex-predIndex)/2);
-      }
-      this.indexingColumns(props)
+    moveCol(){
+      console.log(this.SORT_COLUMNS)
+      let columnsList = this.SORT_COLUMNS;
+      this.indexingColumns(columnsList)
     },
     ...mapActions([
       'pushColumn','loadCards',"loadColumns","indexingColumns"
     ]),
     addColumn(props) {
-      let col = this.COLUMNS_SORT;
-      let len = col.length;
-      let ind = (len>0)?col[len-1].index+1:0;
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
+        myDiv.style.maxHeight = "80px";
         if (props.state)
           this.pushColumn({
             idColumn: 'id' + (new Date()).getTime(),
-            title: props.title,
-            indexColumn: ind
+            title: props.title
           })
-        myDiv.style.maxHeight = "80px";
       }else{
         myDiv.style.maxHeight = "140px";
       }

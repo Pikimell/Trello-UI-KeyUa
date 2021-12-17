@@ -2,7 +2,7 @@ import Vue from "vue"
 import Vuex from 'vuex'
 
 const axios = require('axios');
-const ENDPOINT = "http://localhost:3000";
+const PATH = "http://localhost:3000";
 
 
 Vue.use(Vuex)
@@ -11,11 +11,15 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         cols: [],
-        cards: []
+        cards: [],
+        colIndexes: []
     },
     mutations: {
         loadColumns: (state, columns) => {
             state.cols = columns;
+        },
+        loadColumnIndexes: (state, colIndex) => {
+            state.colIndexes = colIndex;
         },
         loadCards: (state, cards) => {
             state.cards = cards;
@@ -51,72 +55,89 @@ export default new Vuex.Store({
                 }
             }
         },
-        indexingColumns: (state, {idColumn, newIndex}) => {
-            function isPrime(column) {return column.idColumn === idColumn}
-            let index = state.cols.findIndex(isPrime);
-            if(index!==-1){
-                state.cols[index].indexColumn = newIndex;
+        editTitleCol: (state, {idColumn, title}) => {
+            for (let i = 0; i < state.cols.length; i++) {//TODO
+                if (state.cols[i].idColumn === idColumn) {
+                    state.cols[i].title = title;
+                    break;
+                }
             }
+        },
+        indexingColumns: (state, columns) => {
+            let listIndex = [];
+            columns.forEach(x=>listIndex.push(x.idColumn))
+            state.colIndexes = listIndex
+            axios.put(PATH + `/updateIndexes/columns`,{
+                colIndexes: JSON.stringify({
+                    column: listIndex
+                })
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        pushIndex: (state, {index,idColumn}) => {
+            state.colIndexes.push(idColumn)//TODO
+            console.log(index)//delete after correction
+            // state.colIndexes = state.colIndexes.splice(index, 0, idColumn);TODO
         }
     },
     actions: {
         loadColumns: ({commit}) => {
-            axios.get(ENDPOINT + '/getColumns')
+            axios.get(PATH + '/getColumns')
                 .then(function (response) {
-                    commit('loadColumns', response.data.Items.sort( (a, b) => {
-                        if (a.indexColumn > b.indexColumn) {
-                            return 1;
-                        }
-                        if (a.indexColumn < b.indexColumn) {
-                            return -1;
-                        }
-                        return 0;
-                    }))
+                    commit('loadColumns', response.data.Items)
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
-                .then(function () {
-                });
+
+            axios.get(PATH + '/getColIndexes')
+                .then(function (response) {
+                    commit('loadColumnIndexes', JSON.parse(response.data.Items[0].colIndexes).column)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+
         },
         loadCards: ({commit}) => {
-            axios.get(ENDPOINT + '/getCards')
+            axios.get(PATH + '/getCards')
                 .then(function (response) {
-                    commit('loadCards', response.data.Items.reverse())
+                    commit('loadCards', response.data.Items)
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
-                .then(function () {
-                });
         },
-
         indexingColumns: ({commit}, data) => {
-            axios.put(ENDPOINT + `/updateColIndex/${data.idColumn}`,{
-                indexColumn: data.newIndex
-            }).then(function (response) {
-                if (response.statusText === "OK")
-                    commit('indexingColumns', data)
-            }).catch(function (error) {
-                console.log(error);
-            });
+            commit('indexingColumns',data)
         },
-
-        pushColumn: ({commit}, column) => {
-            axios.post(ENDPOINT + '/pushColumn', {
+        pushColumn: ({commit,getters}, column) => {
+            axios.post(PATH + '/pushColumn', {
                 idColumn: column.idColumn,
-                title: column.title,
-                indexColumn: column.indexColumn
+                title: column.title
             }).then(function (response) {
-                if (response.statusText === "OK")
+                if (response.statusText === "OK"){
                     commit('pushColumn', column);
+                }
             }).catch(function (error) {
                 console.log(error);
             });
 
+            let index =  getters.INDEX_COL.length+1;
+            commit('pushIndex', {index: index,idColumn: column.idColumn});
+
+            axios.put(PATH + `/updateIndexes/columns`,{
+                colIndexes: JSON.stringify({
+                    column: getters.INDEX_COL
+                })
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         pushCard: ({commit}, card) => {
-            axios.post(ENDPOINT + '/pushCard', {
+            axios.post(PATH + '/pushCard', {
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
@@ -130,7 +151,7 @@ export default new Vuex.Store({
             });
         },
         delColumn: ({commit}, idColumn) => {
-            axios.delete(ENDPOINT + `/deleteColumn/${idColumn}`)
+            axios.delete(PATH + `/deleteColumn/${idColumn}`)
                 .then(function (response) {
                     if (response.statusText === "OK") {
                         commit('delColumn', idColumn)
@@ -141,7 +162,7 @@ export default new Vuex.Store({
             });
         },
         delCard: ({commit}, idCard) => {
-            axios.delete(ENDPOINT + `/deleteCard/${idCard}`).then(function (response) {
+            axios.delete(PATH + `/deleteCard/${idCard}`).then(function (response) {
                 if (response.statusText === "OK")
                     commit('delCard', idCard)
             }).catch(function (error) {
@@ -150,7 +171,7 @@ export default new Vuex.Store({
 
         },
         updateCard: ({commit}, props) => {
-            axios.put(ENDPOINT + `/updateCard/${props.idCard}`,{
+            axios.put(PATH + `/updateCard/${props.idCard}`,{
                 idCard: props.idCard,
                 title: props.title,
                 description: props.desc,
@@ -162,25 +183,31 @@ export default new Vuex.Store({
                 console.log(error);
             });
         },
-
+        editTitleCol: ({commit}, props) => {
+            axios.put(PATH + `/updateColumn/${props.idColumn}`,{
+                title: props.title,
+            }).then(function (response) {
+                if (response.statusText === "OK")
+                    commit('editTitleCol', props)
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
     },
     getters: {
         COLUMNS(state) {
             return state.cols
         },
+        SORT_COLUMNS(state){
+            let sortedList = [];
+            state.colIndexes.forEach(idCol=>{
+                let selectCol = state.cols.filter(col => col.idColumn === idCol)[0]
+                sortedList.push(selectCol)
+            })
+            return sortedList;
+        },
         CARDS(state) {
             return state.cards;
-        },
-        COLUMNS_SORT(state){
-            return state.cols.sort((left,right) => {
-                if (left.indexColumn > right.indexColumn) {
-                    return 1;
-                }
-                if (left.indexColumn < right.indexColumn) {
-                    return -1;
-                }
-                return 0;
-            })
         },
         CARDS_COL: (state) => ({idCol, sorted}) => {
             let result = state.cards.filter(x=>x.idColumn === idCol)
@@ -194,7 +221,9 @@ export default new Vuex.Store({
                 return 0;
             })
             return result;
-
+        },
+        INDEX_COL(state){
+            return state.colIndexes;
         }
     },
     modules: {}
