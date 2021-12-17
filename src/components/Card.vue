@@ -56,7 +56,7 @@ export default {
     addDecs() {
       this.updateCard({
         idCard: this.card.idCard,
-        index: this.card.index,
+        indexCard: this.card.indexCard,
         title: this.card.title,
         desc: 'Default description'
       })
@@ -70,7 +70,8 @@ export default {
         this.updateCard({
           idCard: this.card.idCard,
           title: this.newTitle,
-          desc: this.newDescription
+          desc: this.newDescription,
+          indexCard: this.card.indexCard
         })
 
       } else {

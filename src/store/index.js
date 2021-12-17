@@ -51,24 +51,11 @@ export default new Vuex.Store({
                 }
             }
         },
-        editTitleCol: (state, {idColumn, title}) => {
-            for (let i = 0; i < state.cols.length; i++) {//TODO
-                if (state.cols[i].idColumn === idColumn) {
-                    state.cols[i].title = title;
-                    break;
-                }
-            }
-        },
-        indexingColumns: (state, {idColumn, oldIndex, newIndex}) => {
-            console.log(oldIndex, '----',newIndex)
-            function isPrime(column) {
-                return column.idColumn === idColumn
-            }
+        indexingColumns: (state, {idColumn, newIndex}) => {
+            function isPrime(column) {return column.idColumn === idColumn}
             let index = state.cols.findIndex(isPrime);
-            if(index!=-1){
-                let col = state.cols[index];col.index = newIndex
-                state.cols = state.cols.splice(index,1)
-                state.cols.insert(newIndex, col)
+            if(index!==-1){
+                state.cols[index].indexColumn = newIndex;
             }
         }
     },
@@ -77,10 +64,10 @@ export default new Vuex.Store({
             axios.get(ENDPOINT + '/getColumns')
                 .then(function (response) {
                     commit('loadColumns', response.data.Items.sort( (a, b) => {
-                        if (a.index > b.index) {
+                        if (a.indexColumn > b.indexColumn) {
                             return 1;
                         }
-                        if (a.index < b.index) {
+                        if (a.indexColumn < b.indexColumn) {
                             return -1;
                         }
                         return 0;
@@ -105,14 +92,21 @@ export default new Vuex.Store({
         },
 
         indexingColumns: ({commit}, data) => {
-            commit('indexingColumns', data)
+            axios.put(ENDPOINT + `/updateColIndex/${data.idColumn}`,{
+                indexColumn: data.newIndex
+            }).then(function (response) {
+                if (response.statusText === "OK")
+                    commit('indexingColumns', data)
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
 
         pushColumn: ({commit}, column) => {
             axios.post(ENDPOINT + '/pushColumn', {
                 idColumn: column.idColumn,
                 title: column.title,
-                index: column.index
+                indexColumn: column.indexColumn
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushColumn', column);
@@ -127,7 +121,7 @@ export default new Vuex.Store({
                 idColumn: card.idColumn,
                 title: card.title,
                 description: card.description,
-                index: card.index
+                indexCard: card.indexCard
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushCard', card)
@@ -160,7 +154,7 @@ export default new Vuex.Store({
                 idCard: props.idCard,
                 title: props.title,
                 description: props.desc,
-                index: props.index
+                indexCard: props.indexCard
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('editCard', props)
@@ -168,17 +162,7 @@ export default new Vuex.Store({
                 console.log(error);
             });
         },
-        editTitleCol: ({commit}, props) => {
-            axios.put(ENDPOINT + `/updateColumn/${props.idColumn}`, {
-                title: props.title,
-                index: props.index
-            }).then(response => {
-                if (response.statusText === "OK")
-                    commit('editTitleCol', props)
-            }).catch(error => {
-                console.log(error);
-            });
-        }
+
     },
     getters: {
         COLUMNS(state) {
@@ -186,6 +170,31 @@ export default new Vuex.Store({
         },
         CARDS(state) {
             return state.cards;
+        },
+        COLUMNS_SORT(state){
+            return state.cols.sort((left,right) => {
+                if (left.indexColumn > right.indexColumn) {
+                    return 1;
+                }
+                if (left.indexColumn < right.indexColumn) {
+                    return -1;
+                }
+                return 0;
+            })
+        },
+        CARDS_COL: (state) => ({idCol, sorted}) => {
+            let result = state.cards.filter(x=>x.idColumn === idCol)
+            if(sorted) result = result.sort((a, b) => {
+                if (a.indexCard > b.indexCard) {
+                    return 1;
+                }
+                if (a.indexCard < b.indexCard) {
+                    return -1;
+                }
+                return 0;
+            })
+            return result;
+
         }
     },
     modules: {}

@@ -1,5 +1,5 @@
 <template>
-<span class="--column">
+<div class="--column" v-bind:title="this.idColumn">
 
   <div id="col-header">
     <b-form-input class="col-title" id="inp-title"
@@ -24,15 +24,7 @@
     <draggable id="col--body"
         v-bind="dragOptions"
         @end="moveCard">
-      <Card v-for="card of this.CARDS.filter(x=>x.idColumn === this.idColumn).sort( (a, b) => {
-                if (a.index > b.index) {
-                    return 1;
-                }
-                if (a.index < b.index) {
-                    return -1;
-                }
-                return 0;
-            })"
+      <Card v-for="card of this.CARDS_COL({idCol:this.idColumn,sorted:true})"
           v-bind:card="card"
           :key="card.idCard"/>
     </draggable>
@@ -48,7 +40,7 @@
     />
   </div>
 
-</span>
+</div>
 </template>
 
 <script>
@@ -66,6 +58,9 @@ export default {
     ...mapActions([
       'pushCard', 'delColumn', 'editTitleCol', 'delCard',
     ]),
+    getThisIdCol(){
+      return this.idColumn;
+    },
     moveCard(data){
       let props = {
         idColumn: this.idColumn,
@@ -90,7 +85,7 @@ export default {
       this.edited = !this.edited;
     },
     delCol() {
-      let cardsCol = this.CARDS.filter(card => card.idColumn === this.idColumn)
+      let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
       cardsCol.forEach(x => {
         this.delCard(x.idCard)
       })
@@ -101,7 +96,7 @@ export default {
         this.pushCard({
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
-          index: this.CARDS.length,
+          indexCard: this.CARDS_COL({idCol:this.idColumn,sorted:false}).length,
           title: this.titleForNewCard,
           description: ''
         })
@@ -123,7 +118,7 @@ export default {
     }
   }, computed: {
     ...mapGetters([
-      'CARDS'
+      'CARDS_COL'
     ]),
     dragOptions() {
       return {
@@ -146,7 +141,6 @@ export default {
 
 <style scoped>
 .--column {
-  margin: 1%;
   display: flex;
   width: 300px;
   height: 93%;
@@ -157,6 +151,7 @@ export default {
   justify-content: flex-start;
   border-radius: 10px;
   border: 1px solid grey;
+  margin: 1%;
 }
 
 .ghost{
@@ -178,7 +173,7 @@ export default {
 
 #col--body {
   min-height: 115px;
-  max-height: 700px;
+  max-height: 530px;
   overflow: auto;
 }
 

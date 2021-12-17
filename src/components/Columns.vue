@@ -1,45 +1,53 @@
 <template>
-  <div class="columns-container">
+  <div id="columns-container">
+    <div
+        id="add--col"
+        slot="footer"
+        class="btn-group list-group-item"
+        role="group"
+        aria-label="Basic example"
+        key="footer" v-bind:draggable="false">
+      <b-form-input
+          v-if="showInputTitle"
+          v-model="titleNewColumn"
+          class="add--col--elem"
+          placeholder="Enter title for new column"
+          :state="nameState">
+      </b-form-input>
+
+      <BButton
+          class="add--col--elem"
+          v-on:click="addColumn({
+            title:titleNewColumn,
+            state:nameState
+          });titleNewColumn='';"
+      >
+        Create Column
+      </BButton>
+
+    </div>
     <draggable
         class="--columns"
         v-bind="dragOptions"
         @end="moveCol">
       <Column
-          v-for="col in this.COLUMNS"
+          v-for="col in this.COLUMNS_SORT"
           v-bind:idColumn="col.idColumn"
           v-bind:title="col.title"
           v-bind:key="col.idColumn"
       />
-      <div
-          id="add--col"
-          slot="footer"
-          class="btn-group list-group-item"
-          role="group"
-          aria-label="Basic example"
-          key="footer" v-bind:draggable="false">
-        <b-form-input
-            v-if="showInputTitle"
-            v-model="titleNewColumn"
-            class="add--col--elem"
-            placeholder="Enter title for new column"
-            :state="nameState">
-        </b-form-input>
-
-        <BButton
-            class="add--col--elem"
-            v-on:click="addColumn({
-            title:titleNewColumn,
-            state:nameState
-          });titleNewColumn='';"
-        >
-          Create Column
-        </BButton>
-
-      </div>
     </draggable>
+
+    <div class="foot">
+      <BButton id="foot-but-left" class="fotter--but" pill v-on:click="scrollToDir('left');" >
+        <b-icon icon="arrow-left-circle" font-scale="2"></b-icon>
+      </BButton>
+      <BButton id="foot-but-right" class="fotter--but" pill v-on:click="scrollToDir('right');" >
+        <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
+      </BButton>
+    </div>
   </div>
 </template>
-
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
@@ -60,7 +68,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-        'COLUMNS'
+        'COLUMNS_SORT'
     ]),
     dragOptions() {
       return {
@@ -75,29 +83,49 @@ export default {
     }
   },
   methods:{
+    scrollToDir(dir){
+      let container = document.getElementById('columns-container')
+      if(dir==="left"){
+        container.scrollLeft = 0;
+      }else{
+        container.scrollLeft = container.scrollWidth;
+      }
+    },
     moveCol(data){
+      let copyCols = this.COLUMNS_SORT;
       let props = {
-        idColumn: this.idColumn,
-        oldIndex: data.oldIndex,
+        idColumn: data.item.title,
         newIndex: data.newIndex
       }
-      console.log(props.oldIndex,"---",props.newIndex)
+      if(data.newIndex === 0){
+        props.newIndex = copyCols[0].indexColumn-1;
+      }else if(data.newIndex === copyCols.length-1){
+        props.newIndex = copyCols[copyCols.length-1].indexColumn+1;
+      }else{
+        let predIndex = copyCols[data.newIndex-1].indexColumn;
+        let nextIndex = copyCols[data.newIndex+1].indexColumn;
+        props.newIndex = nextIndex - ((nextIndex-predIndex)/2);
+      }
       this.indexingColumns(props)
     },
     ...mapActions([
       'pushColumn','loadCards',"loadColumns","indexingColumns"
     ]),
     addColumn(props) {
-      let col = this.COLUMNS;
+      let col = this.COLUMNS_SORT;
       let len = col.length;
       let ind = (len>0)?col[len-1].index+1:0;
+      let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         if (props.state)
           this.pushColumn({
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title,
-            index: ind
+            indexColumn: ind
           })
+        myDiv.style.maxHeight = "80px";
+      }else{
+        myDiv.style.maxHeight = "140px";
       }
       this.showInputTitle = !this.showInputTitle;
     }
@@ -111,28 +139,21 @@ export default {
 
 <style scoped>
 
-.columns-container{
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: flex-start;
-  overflow-x: auto;
+#columns-container{
   margin:0;
-  padding:0;
   background-color: rgba(155, 155, 155, 0.3);
   width: 100%;
+  overflow-x: auto;
+  flex-wrap: nowrap;
 }
 
 .--columns {
   display: flex;
-  flex-wrap: nowrap;
-  flex-direction: row;
   justify-content: flex-start;
   align-content: flex-start;
+  flex-direction: row;
   height: 100%;
   min-height: 239px;
-  min-width: 1280px;
 }
 
 #add--col {
@@ -147,6 +168,9 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
   min-width: 300px;
+  max-height: 80px;
+  position:absolute;
+  bottom: 0;
 }
 
 
@@ -157,5 +181,29 @@ export default {
 
 .add--col--elem {
   margin-top: 10px;
+  max-height: 40px;
+}
+
+.foot{
+  width:100%;
+  height: 50px;
+  display: flex;
+}
+
+.fotter--but{
+  opacity: 0.3;
+  padding: 3px 3px 0 3px ;
+}
+.fotter--but:hover{
+  opacity: 1;
+}
+
+#foot-but-left{
+  position: absolute;
+  left:30px
+}
+#foot-but-right{
+  position: absolute;
+  right:30px ;
 }
 </style>
