@@ -58,9 +58,6 @@ export default {
     ...mapActions([
       'pushCard', 'delColumn', 'editTitleCol', 'delCard',
     ]),
-    getThisIdCol(){
-      return this.idColumn;
-    },
     moveCard(data){
       let props = {
         idColumn: this.idColumn,
@@ -85,10 +82,10 @@ export default {
       this.edited = !this.edited;
     },
     delCol() {
-      let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
-      cardsCol.forEach(x => {
+      //let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
+      /*cardsCol.forEach(x => {
         this.delCard(x.idCard)
-      })
+      })*/
       this.delColumn(this.idColumn)
     },
     newCard() {

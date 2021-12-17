@@ -31,17 +31,10 @@ export default new Vuex.Store({
             state.cards.push(card);
         },
         delColumn: (state, idColumn) => {
-            console.log(idColumn)
-            state.cols = state.cols.filter(col => col.idColumn !== 0)
-            console.log(state.colIndexes.filter(idColumn => idColumn !== 0))
-            state.colIndexes.filter(idColumn => idColumn!== idColumn)
-            axios.put(PATH + `/updateIndexes/columns`,{
-                colIndexes: JSON.stringify({
-                    column: state.colIndexes
-                })
-            }).catch(function (error) {
-                console.log(error);
-            });
+            console.log('delete '+ idColumn)
+            //state.cols = state.cols.filter(col => col.idColumn !== 0)
+            //console.log(state.colIndexes.filter(idColumn => idColumn !== 0))
+            //state.colIndexes.filter(idColumn => idColumn!== idColumn)
         },
         delCard: (state, idCard) => {
             function isPrime(card) {
@@ -119,6 +112,10 @@ export default new Vuex.Store({
             commit('indexingColumns',data)
         },
         pushColumn: ({commit,getters}, column) => {
+            console.log(commit)
+            console.log(getters)
+            console.clear()
+            console.log(column)
             axios.post(PATH + '/pushColumn', {
                 idColumn: column.idColumn,
                 title: column.title
@@ -128,7 +125,7 @@ export default new Vuex.Store({
                 }
             }).catch(function (error) {
                 console.log(error);
-            });
+            });/*
 
             let index =  getters.INDEX_COL.length+1;
             commit('pushIndex', {index: index,idColumn: column.idColumn});
@@ -139,7 +136,7 @@ export default new Vuex.Store({
                 })
             }).catch(function (error) {
                 console.log(error);
-            });
+            });*/
         },
         pushCard: ({commit}, card) => {
             axios.post(PATH + '/pushCard', {

@@ -101,6 +101,7 @@ export default {
       'pushColumn','loadCards',"loadColumns","indexingColumns"
     ]),
     addColumn(props) {
+      console.log(props)
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         myDiv.style.maxHeight = "80px";
