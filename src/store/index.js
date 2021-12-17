@@ -31,12 +31,17 @@ export default new Vuex.Store({
             state.cards.push(card);
         },
         delColumn: (state, idColumn) => {
-            function isPrime(column) {
-                return column.idColumn === idColumn
-            }
-
-            let index = state.cols.findIndex(isPrime);
-            state.cols.splice(index, 1)
+            console.log(idColumn)
+            state.cols = state.cols.filter(col => col.idColumn !== 0)
+            console.log(state.colIndexes.filter(idColumn => idColumn !== 0))
+            state.colIndexes.filter(idColumn => idColumn!== idColumn)
+            axios.put(PATH + `/updateIndexes/columns`,{
+                colIndexes: JSON.stringify({
+                    column: state.colIndexes
+                })
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         delCard: (state, idCard) => {
             function isPrime(card) {
