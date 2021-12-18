@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard',
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes'
     ]),
     moveCard(data){
       let props = {
@@ -67,7 +67,20 @@ export default {
       console.log(props.oldIndex,"---",props.newIndex)
       //this.indexingColumns(props)
     },
+    visibleButtonScroll(){
+      let con = document.getElementById('columns-container')
+      let buts = document.getElementsByClassName('fotter--but')
+
+      if(con.scrollWidth > con.offsetWidth){
+        buts[0].style.visibility = "visible";
+        buts[1].style.visibility = "visible";
+      }else{
+        buts[0].style.visibility = "hidden";
+        buts[1].style.visibility = "hidden";
+      }
+    },
     editTitleColumn() {
+
       if (this.edited) {
         this.dataBut = '✎';
         if (this.title !== this.edTitle)
@@ -82,11 +95,13 @@ export default {
       this.edited = !this.edited;
     },
     delCol() {
-      //let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
-      /*cardsCol.forEach(x => {
+      let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
+      cardsCol.forEach(x => {
         this.delCard(x.idCard)
-      })*/
+      })
       this.delColumn(this.idColumn)
+      this.delIndexes(this.idColumn)
+      this.visibleButtonScroll()
     },
     newCard() {
       if (this.nameState1) {

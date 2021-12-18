@@ -29,10 +29,10 @@
     <draggable
         class="--columns"
         v-bind="dragOptions"
-        :list="SORT_COLUMNS"
+        :list="this.COLUMNS"
         @end="moveCol">
       <Column
-          v-for="col in this.SORT_COLUMNS"
+          v-for="col in this.COLUMNS"
           v-bind:idColumn="col.idColumn"
           v-bind:title="col.title"
           v-bind:key="col.idColumn"
@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-        'SORT_COLUMNS'
+        'COLUMNS','INDEX_COL'
     ]),
     dragOptions() {
       return {
@@ -93,32 +93,53 @@ export default {
       }
     },
     moveCol(){
-      console.log(this.SORT_COLUMNS)
-      let columnsList = this.SORT_COLUMNS;
-      this.indexingColumns(columnsList)
+      this.indexingColumns(this.COLUMNS)
+      this.sortListColumn(this.INDEX_COL);
     },
     ...mapActions([
-      'pushColumn','loadCards',"loadColumns","indexingColumns"
+      'pushColumn','loadCards',"loadColumns","indexingColumns","pushIndex","loadColumnIndexes","sortListColumn"
     ]),
     addColumn(props) {
-      console.log(props)
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         myDiv.style.maxHeight = "80px";
-        if (props.state)
-          this.pushColumn({
+        if (props.state){
+          let col = {
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title
-          })
+          }
+          this.pushColumn(col) // PUSH COLUMN
+          this.pushIndex(col.idColumn) // PUSH INDEX
+        }
       }else{
         myDiv.style.maxHeight = "140px";
       }
       this.showInputTitle = !this.showInputTitle;
+      this.visibleButtonScroll()
+    },
+    visibleButtonScroll(){
+      let con = document.getElementById('columns-container')
+      let buts = document.getElementsByClassName('fotter--but')
+
+      if(con.scrollWidth > con.offsetWidth){
+        buts[0].style.visibility = "visible";
+        buts[1].style.visibility = "visible";
+      }else{
+        buts[0].style.visibility = "hidden";
+        buts[1].style.visibility = "hidden";
+      }
     }
   },
   beforeMount() {
     this.loadColumns()
+    this.loadColumnIndexes()
     this.loadCards()
+  },
+  mounted(){
+    this.sortListColumn(this.INDEX_COL)
+  },
+  beforeUpdate() {
+    this.visibleButtonScroll()
   }
 }
 </script>
