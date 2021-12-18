@@ -38,7 +38,17 @@ const columnModule = {
             axios.get(PATH + '/getColumns')
                 .then(function (response) {
                     console.log("Загрузились Колоночки!")
-                    commit('loadColumns', response.data.Items)
+                    let cols = response.data.Items
+                    //BAD PRACTICE
+                    axios.get(PATH + '/getColIndexes')
+                        .then(function (response) {
+                            commit('loadColumns', cols)
+                            commit('sortListColumn', JSON.parse(response.data.Items[0].colIndexes).columns)
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                    //BAD PRACTICE
                 })
                 .catch(function (error) {
                     console.log(error);
