@@ -1,6 +1,5 @@
 <template>
 <div class="--column">
-
   <div id="col-header">
     <b-form-input class="col-title" id="inp-title"
                   v-if="this.edited"
@@ -22,10 +21,10 @@
   </div>
 
     <draggable id="col--body"
-        v-bind="dragOptions"
-               :list="listCards"
-        @end="moveCard">
-      <Card v-for="card of listCards"
+                v-bind="dragOptions"
+               :list="this.listCards"
+                @change="moveCard">
+      <Card v-for="card of this.listCards"
           v-bind:card="card"
           :key="card.idCard"/>
     </draggable>
@@ -57,11 +56,24 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex','updateCard'
     ]),
-    moveCard(){
+    moveCard(data){
+      console.log(data)
+      let card = Object.values(data)[0].element;
+      console.log(card)
+
+      if(this.idColumn !== card.idColumn){
+        this.updateCard({
+          idCard: card.idCard,
+          title: card.title,
+          desc: card.description,
+          idColumn: this.idColumn
+        })
+      }
       this.rewriteIndex({idColumn:this.idColumn,cards:this.listCards});
-    },
+    }
+    ,
     visibleButtonScroll(){
       let con = document.getElementById('columns-container')
       let buts = document.getElementsByClassName('fotter--but')
@@ -90,10 +102,11 @@ export default {
       this.edited = !this.edited;
     },
     delCol() {
-      let cardsCol = this.CARDS_COL({idCol:this.idColumn,sorted:false})
+      let cardsCol = this.CARDS_COL(this.idColumn)
       cardsCol.forEach(x => {
         this.delCard(x.idCard)
       })
+
       this.delColumn(this.idColumn)
       this.delIndexes(this.idColumn)
       this.delCardIndexes(this.idColumn)
@@ -120,8 +133,10 @@ export default {
 
 
     getListCard(){
+      //TODO
+      //this.listCards = this.CARDS(this.idColumn)
       //this.listCards = this.TEST_CARDS(this.idColumn)
-      this.listCards = this.CARDS_COL({idCol:this.idColumn,indexCards:this.INDEX_CARDS})
+      this.listCards = this.SORT_CARDS_COL({idCol:this.idColumn,indexCards:this.INDEX_CARDS})
     }
   },
   data() {
@@ -135,11 +150,11 @@ export default {
     }
   }, computed: {
     ...mapGetters([
-      'CARDS_COL','INDEX_CARDS','TEST_CARDS'
+      'CARDS_COL','INDEX_CARDS','TEST_CARDS','CARDS','SORT_CARDS_COL'
     ]),
     dragOptions() {
       return {
-        animation: 0,
+        animation: 200,
         group: "cards",
         disabled: false,
         ghostClass: "ghost"

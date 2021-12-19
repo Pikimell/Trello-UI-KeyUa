@@ -77,7 +77,8 @@ export default {
         this.updateCard({
           idCard: this.card.idCard,
           title: this.newTitle,
-          desc: this.newDescription
+          desc: this.newDescription,
+          idColumn: this.card.idColumn
         })
 
       } else {

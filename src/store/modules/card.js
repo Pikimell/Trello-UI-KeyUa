@@ -19,11 +19,12 @@ const cardModule = {
             let index = state.cards.findIndex(isPrime);
             state.cards.splice(index, 1)
         },
-        editCard: (state, {idCard, title,desc}) => {
+        editCard: (state, {idCard, title, desc, idColumn}) => {
             for (let i = 0; i < state.cards.length; i++) {//TODO
                 if (state.cards[i].idCard === idCard) {
                     state.cards[i].title = title;
                     state.cards[i].description = desc
+                    state.cards[i].idColumn = idColumn
                     break;
                 }
             }
@@ -70,7 +71,8 @@ const cardModule = {
             axios.put(PATH + `/updateCard/${props.idCard}`,{
                 idCard: props.idCard,
                 title: props.title,
-                description: props.desc
+                description: props.desc,
+                idColumn: props.idColumn
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('editCard', props)
@@ -80,19 +82,24 @@ const cardModule = {
         },
     },
     getters:{
-        CARDS_COL: (state) => ({idCol, indexCards}) => {
+        CARDS: (state) => (idCol) => {
+          return state.cards.filter(x => x.idColumn === idCol)
+        },
+
+        CARDS_COL: (state) => (idCol) => {
+            return state.cards.filter(card => card.idColumn === idCol);
+        },
+        SORT_CARDS_COL: (state) => ({idCol, indexCards}) => {
             let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idCol)[0]:[]
             let result = []//state.cards.filter(x=>x.idColumn === idCol)
             listIndex.cards.forEach(idCard => {
-              let cards = state.cards.filter(card => card.idCard === idCard);
-              if(cards.length){
-                  result.push(cards[0])
-              }
+                let cards = state.cards.filter(card => card.idCard === idCard);
+                if(cards.length){
+                    result.push(cards[0])
+                }
             })
-
             return result;
         },
-
         TEST_CARDS: (state) => (idColumn) => {
             console.log(state)
             /*let indexCards = (state.INDEX_CARDS)?state.INDEX_CARDS:[]

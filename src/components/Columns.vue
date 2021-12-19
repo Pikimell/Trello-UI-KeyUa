@@ -73,7 +73,7 @@ export default {
     ]),
     dragOptions() {
       return {
-        animation: 0,
+        animation: 200,
         group: "columns",
         disabled: false,
         ghostClass: "ghost"
