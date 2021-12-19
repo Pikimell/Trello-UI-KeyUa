@@ -51,17 +51,24 @@ export default {
   computed: {},
   methods: {
     ...mapActions([
-       'updateCard','delCard'
+       'updateCard','delCard','pushCardIndex','removeIndexCard','updateCardIndex'
     ]),
     addDecs() {
-      this.updateCard({
+      let card = {
         idCard: this.card.idCard,
-        indexCard: this.card.indexCard,
         title: this.card.title,
+        idColumn: this.card.idColumn,
         desc: 'Default description'
-      })
+      }
+      this.updateCard(card)
     },deleteCard() {
-      this.delCard(this.card.idCard)
+      let card = {
+        idCard: this.card.idCard,
+        idColumn: this.card.idColumn,
+      }
+      this.delCard(card.idCard)
+      this.removeIndexCard(card)
+      this.updateCardIndex(card.idColumn)
     },
     editCard() {
       if (this.edited) {
@@ -70,8 +77,7 @@ export default {
         this.updateCard({
           idCard: this.card.idCard,
           title: this.newTitle,
-          desc: this.newDescription,
-          indexCard: this.card.indexCard
+          desc: this.newDescription
         })
 
       } else {

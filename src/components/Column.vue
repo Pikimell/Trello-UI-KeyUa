@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex'
     ]),
     moveCard(data){
       let props = {
@@ -101,21 +101,25 @@ export default {
       })
       this.delColumn(this.idColumn)
       this.delIndexes(this.idColumn)
+      this.delCardIndexes(this.idColumn)
       this.visibleButtonScroll()
     },
     newCard() {
       if (this.nameState1) {
-        this.pushCard({
+        let card = {
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
           indexCard: this.CARDS_COL({idCol:this.idColumn,sorted:false}).length,
           title: this.titleForNewCard,
           description: ''
-        })
-        this.titleForNewCard = '';
+        }
+        this.pushCard(card)
+        this.pushCardIndex(card)
+
         //Scroll
         let container = this.$el.querySelector('#col--body')
         container.scrollTop = container.scrollHeight;
+        this.titleForNewCard = '';
       }
       this.showAdd = !this.showAdd;
     }

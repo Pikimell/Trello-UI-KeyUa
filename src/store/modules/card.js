@@ -70,8 +70,7 @@ const cardModule = {
             axios.put(PATH + `/updateCard/${props.idCard}`,{
                 idCard: props.idCard,
                 title: props.title,
-                description: props.desc,
-                indexCard: props.indexCard
+                description: props.desc
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('editCard', props)

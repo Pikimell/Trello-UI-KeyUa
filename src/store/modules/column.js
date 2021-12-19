@@ -39,11 +39,10 @@ const columnModule = {
                     let cols = response.data.Items;
                     axios.get(PATH + '/getColIndexes')
                         .then(function (response) {
-                            let colIndex = JSON.parse(response.data.Items[0].colIndexes).columns
+                            let colIndex = JSON.parse(response.data.Items.filter(x=>x.idIndex === "columns")[0].colIndexes).columns
                             commit('loadColumns', cols)
                             commit('loadColumnIndexes', colIndex)
                             commit('sortListColumn', colIndex)
-                            console.log(cols)
                         })
                         .catch(function (error) {
                             console.log(error);

@@ -97,7 +97,9 @@ export default {
       this.sortListColumn(this.INDEX_COL);
     },
     ...mapActions([
-      'pushColumn','loadCards',"loadColumns","indexingColumns","pushIndex","loadColumnIndexes","sortListColumn"
+        'pushColumn','loadCards',"loadColumns","indexingColumns",
+        "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
+        'loadCardIndexes'
     ]),
     addColumn(props) {
       let myDiv = document.getElementById("add--col")
@@ -110,6 +112,7 @@ export default {
           }
           this.pushColumn(col) // PUSH COLUMN
           this.pushIndex(col.idColumn) // PUSH INDEX
+          this.createIndexForCard(col.idColumn)// Create Index for Cards in Column
         }
       }else{
         myDiv.style.maxHeight = "140px";
@@ -134,6 +137,7 @@ export default {
     this.loadColumns()
     this.loadColumnIndexes()
     this.loadCards()
+    this.loadCardIndexes();
   },
   mounted(){
     this.sortListColumn(this.INDEX_COL)

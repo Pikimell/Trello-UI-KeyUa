@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from 'vuex'
 
-import {columnModule,cardModule,columnIndexModule} from "./modules";
+import {columnModule,cardModule,columnIndexModule,cardsIndexModule} from "./modules";
 
 Vue.use(Vuex)
 
@@ -10,7 +10,8 @@ export default new Vuex.Store({
     modules: {
         columnModule,
         cardModule,
-        indexesModule: columnIndexModule
+        columnIndexModule,
+        cardsIndexModule
     },
     getters: {
         SORT_COLUMNS(state){
