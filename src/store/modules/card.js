@@ -100,8 +100,7 @@ const cardModule = {
             })
             return result;
         },
-        TEST_CARDS: (state) => (idColumn) => {
-            console.log(state)
+        TEST_CARDS: (state) => {
             /*let indexCards = (state.INDEX_CARDS)?state.INDEX_CARDS:[]
 
             let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idColumn)[0].cards:[]
@@ -112,8 +111,7 @@ const cardModule = {
                     result.push(cards[0])
                 }
             })*/
-            console.log(idColumn)
-            return []//result;
+            return state.cards//result;
         }
     }
 }
