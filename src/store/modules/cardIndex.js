@@ -65,6 +65,16 @@ const cardsIndexModule = {
                     break;
                 }
             }
+        },
+        rewriteIndex: (state, {idColumn,cards}) => {
+            for(let i=0;i<state.cardIndexes.length;i++){
+                if(state.cardIndexes[i].idIndex === idColumn){
+                    state.cardIndexes[i].cards = cards.map(card => {
+                        return card.idCard
+                    })
+                    break;
+                }
+            }
         }
     },
     actions:{
@@ -107,6 +117,10 @@ const cardsIndexModule = {
         },
         removeIndexCard: ({commit}, data) => {
             commit('removeIndexCard', data)
+        },
+        rewriteIndex: ({commit}, data) =>{
+            commit('rewriteIndex',data)
+            commit('updateCardIndex', data.idColumn)
         }
     },
     getters:{

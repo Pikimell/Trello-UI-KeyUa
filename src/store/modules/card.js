@@ -80,22 +80,34 @@ const cardModule = {
         },
     },
     getters:{
-        CARDS(state) {
-            return state.cards;
-        },
-        CARDS_COL: (state) => ({idCol, sorted}) => {
-            let result = state.cards.filter(x=>x.idColumn === idCol)
-            if(sorted) result = result.sort((a, b) => {
-                if (a.indexCard > b.indexCard) {
-                    return 1;
-                }
-                if (a.indexCard < b.indexCard) {
-                    return -1;
-                }
-                return 0;
+        CARDS_COL: (state) => ({idCol, indexCards}) => {
+            let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idCol)[0]:[]
+            let result = []//state.cards.filter(x=>x.idColumn === idCol)
+            listIndex.cards.forEach(idCard => {
+              let cards = state.cards.filter(card => card.idCard === idCard);
+              if(cards.length){
+                  result.push(cards[0])
+              }
             })
+
             return result;
         },
+
+        TEST_CARDS: (state) => (idColumn) => {
+            console.log(state)
+            /*let indexCards = (state.INDEX_CARDS)?state.INDEX_CARDS:[]
+
+            let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idColumn)[0].cards:[]
+            let result = []//state.cards.filter(x=>x.idColumn === idCol)
+            listIndex.forEach(idCard => {
+                let cards = state.cards.filter(card => card.idCard === idCard);
+                if(cards.length){
+                    result.push(cards[0])
+                }
+            })*/
+            console.log(idColumn)
+            return []//result;
+        }
     }
 }
 

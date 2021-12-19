@@ -23,8 +23,9 @@
 
     <draggable id="col--body"
         v-bind="dragOptions"
+               :list="listCards"
         @end="moveCard">
-      <Card v-for="card of this.CARDS_COL({idCol:this.idColumn,sorted:true})"
+      <Card v-for="card of listCards"
           v-bind:card="card"
           :key="card.idCard"/>
     </draggable>
@@ -56,16 +57,10 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex'
     ]),
-    moveCard(data){
-      let props = {
-        idColumn: this.idColumn,
-        oldIndex: data.oldIndex,
-        newIndex: data.newIndex
-      }
-      console.log(props.oldIndex,"---",props.newIndex)
-      //this.indexingColumns(props)
+    moveCard(){
+      this.rewriteIndex({idColumn:this.idColumn,cards:this.listCards});
     },
     visibleButtonScroll(){
       let con = document.getElementById('columns-container')
@@ -109,19 +104,24 @@ export default {
         let card = {
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
-          indexCard: this.CARDS_COL({idCol:this.idColumn,sorted:false}).length,
           title: this.titleForNewCard,
           description: ''
         }
         this.pushCard(card)
         this.pushCardIndex(card)
-
+        this.getListCard()
         //Scroll
         let container = this.$el.querySelector('#col--body')
         container.scrollTop = container.scrollHeight;
         this.titleForNewCard = '';
       }
       this.showAdd = !this.showAdd;
+    },
+
+
+    getListCard(){
+      //this.listCards = this.TEST_CARDS(this.idColumn)
+      this.listCards = this.CARDS_COL({idCol:this.idColumn,indexCards:this.INDEX_CARDS})
     }
   },
   data() {
@@ -130,11 +130,12 @@ export default {
       titleForNewCard: '',
       edited: false,
       dataBut: '✎',
-      edTitle: this.title
+      edTitle: this.title,
+      listCards: []
     }
   }, computed: {
     ...mapGetters([
-      'CARDS_COL'
+      'CARDS_COL','INDEX_CARDS','TEST_CARDS'
     ]),
     dragOptions() {
       return {
@@ -149,6 +150,9 @@ export default {
       return len > 2
     }
   },
+  beforeMount(){
+    this.getListCard()
+  }
 }
 
 
