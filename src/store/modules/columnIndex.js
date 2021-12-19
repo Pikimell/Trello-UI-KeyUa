@@ -1,6 +1,6 @@
 import axios from "axios";
 const PATH = "http://localhost:3000";
-const indexesModule = {
+const columnIndexModule = {
     state:{
         colIndexes: []
     },
@@ -21,8 +21,7 @@ const indexesModule = {
             });
         },
         pushIndex: (state, idColumn) => {
-            state.colIndexes.push(idColumn)//TODO
-            // state.colIndexes = state.colIndexes.splice(index, 0, idColumn);TODO
+            state.colIndexes.push(idColumn)
         },
         delIndexes: (state, idColumn) => {
             state.colIndexes = state.colIndexes.filter(x=> x !== idColumn)
@@ -48,7 +47,6 @@ const indexesModule = {
                 })
         },
         indexingColumns: ({commit}, data) => {
-            console.log("\n\n\n---------indexingColumns----------\n\n\n");
             commit('indexingColumns',data)
         },
         pushIndex: ({commit}, idColumn) => {
@@ -68,5 +66,5 @@ const indexesModule = {
 }
 
 export {
-    indexesModule
+    columnIndexModule
 }

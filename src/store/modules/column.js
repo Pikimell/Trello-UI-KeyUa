@@ -34,29 +34,28 @@ const columnModule = {
     },
     actions:{
         loadColumns: ({commit}) => {
-            console.log("\n\n\n---------loadColumns----------\n\n\n");
             axios.get(PATH + '/getColumns')
                 .then(function (response) {
-                    console.log("Загрузились Колоночки!")
-                    let cols = response.data.Items
-                    //BAD PRACTICE
+                    let cols = response.data.Items;
                     axios.get(PATH + '/getColIndexes')
                         .then(function (response) {
+                            let colIndex = JSON.parse(response.data.Items[0].colIndexes).columns
                             commit('loadColumns', cols)
-                            commit('sortListColumn', JSON.parse(response.data.Items[0].colIndexes).columns)
+                            commit('loadColumnIndexes', colIndex)
+                            commit('sortListColumn', colIndex)
+                            console.log(cols)
                         })
                         .catch(function (error) {
                             console.log(error);
                         })
-                    //BAD PRACTICE
+
+
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
         },
         pushColumn: ({commit}, column) => {
-            console.log("------------PUSH COLUMN------------")
-
             axios.post(PATH + '/pushColumn', {
                 idColumn: column.idColumn,
                 title: column.title
@@ -67,22 +66,8 @@ const columnModule = {
             }).catch(function (error) {
                 console.log(error);
             });
-
-            //let index = getters.INDEX_COL.length+1;
-            //commit('pushIndex', {index: index,idColumn: column.idColumn});
-
-            /*
-            axios.put(PATH + `/updateIndexes/columns`,{
-                colIndexes: JSON.stringify({
-                    columns: getters.INDEX_COL
-                })
-            }).catch(function (error) {
-                console.log(error);
-            });*/
-            console.log("----------END PUSH COLUMN----------")
         },
         delColumn: ({commit}, idColumn) => {
-            console.log("\n\n\n---------delColumn----------\n\n\n");
             axios.delete(PATH + `/deleteColumn/${idColumn}`)
                 .then(function (response) {
                     if (response.statusText === "OK") {
@@ -94,7 +79,6 @@ const columnModule = {
             });
         },
         editTitleCol: ({commit}, props) => {
-            console.log("\n\n\n---------editTitleCol----------\n\n\n");
             axios.put(PATH + `/updateColumn/${props.idColumn}`,{
                 title: props.title,
             }).then(function (response) {
