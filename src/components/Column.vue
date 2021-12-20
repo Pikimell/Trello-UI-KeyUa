@@ -1,46 +1,48 @@
 <template>
-<div class="--column">
-  <div id="col-header">
-    <b-form-input class="col-title" id="inp-title"
-                  v-if="this.edited"
-                  v-model="edTitle"/>
-    <h5 class="col-title" id="out-title"
-        v-else>{{ edTitle }}</h5>
+  <div class="--column">
+    <div id="col-header">
+      <b-form-input class="col-title" id="inp-title"
+                    v-if="this.edited"
+                    v-model="edTitle"/>
+      <h5 class="col-title" id="out-title"
+          v-else>{{ edTitle }}</h5>
+
+      <div>
+        <BButton @click="this.editTitleColumn"
+                 pill class="col-del"
+                 size="sm"
+                 variant="outline-secondary">{{ dataBut }}
+        </BButton>
+        <BButton @click="this.delCol"
+                 pill class="col-del"
+                 size="sm"
+                 variant="outline-secondary">✕
+        </BButton>
+      </div>
+
+    </div>
+
+    <draggable id="col--body"
+               v-bind="dragOptions"
+               :list="this.listCards"
+               @change="moveCard">
+      <Card v-for="card of this.listCards"
+            v-bind:card="card" @updateView="getListCard"
+            :key="card.idCard"/>
+    </draggable>
 
     <div>
-      <BButton @click="this.editTitleColumn"
-               pill class="col-del"
-               size="sm"
-               variant="outline-secondary">{{ dataBut }}</BButton>
-      <BButton @click="this.delCol"
-               pill class="col-del"
-               size="sm"
-               variant="outline-secondary">✕</BButton>
+      <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
+      <b-form-input
+          v-if="showAdd"
+          v-model="titleForNewCard"
+          class="inp--new-card"
+          placeholder="Enter title for new Card"
+          :state="nameState1"
+      />
     </div>
 
   </div>
-
-    <draggable id="col--body"
-                v-bind="dragOptions"
-               :list="this.listCards"
-                @change="moveCard">
-      <Card v-for="card of this.listCards"
-          v-bind:card="card"
-          :key="card.idCard"/>
-    </draggable>
-
-  <div>
-    <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
-    <b-form-input
-        v-if="showAdd"
-        v-model="titleForNewCard"
-        class="inp--new-card"
-        placeholder="Enter title for new Card"
-        :state="nameState1"
-    />
-  </div>
-
-</div>
 </template>
 
 <script>
@@ -52,18 +54,17 @@ export default {
   name: "Column",
   props: ['idColumn', 'title'],
   components: {
-    Card,draggable
+    Card, draggable
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard','delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex','updateCard'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard'
     ]),
-    moveCard(data){
-      console.log(data)
-      let card = Object.values(data)[0].element;
-      console.log(card)
+    moveCard(data) {
 
-      if(this.idColumn !== card.idColumn){
+      let card = Object.values(data)[0].element;
+
+      if (this.idColumn !== card.idColumn) {
         this.updateCard({
           idCard: card.idCard,
           title: card.title,
@@ -71,17 +72,17 @@ export default {
           idColumn: this.idColumn
         })
       }
-      this.rewriteIndex({idColumn:this.idColumn,cards:this.listCards});
+      this.rewriteIndex({idColumn: this.idColumn, cards: this.listCards});
     }
     ,
-    visibleButtonScroll(){
+    visibleButtonScroll() {
       let con = document.getElementById('columns-container')
       let buts = document.getElementsByClassName('fotter--but')
 
-      if(con.scrollWidth > con.offsetWidth){
+      if (con.scrollWidth > con.offsetWidth) {
         buts[0].style.visibility = "visible";
         buts[1].style.visibility = "visible";
-      }else{
+      } else {
         buts[0].style.visibility = "hidden";
         buts[1].style.visibility = "hidden";
       }
@@ -112,7 +113,7 @@ export default {
       this.delCardIndexes(this.idColumn)
       this.visibleButtonScroll()
     },
-    newCard() {
+    async newCard() {
       if (this.nameState1) {
         let card = {
           idColumn: this.idColumn,
@@ -120,10 +121,12 @@ export default {
           title: this.titleForNewCard,
           description: ''
         }
-        this.pushCard(card)
-        this.pushCardIndex(card)
-        this.getListCard()
-        //Scroll
+
+        this.pushCard(card).then(()=>{
+          this.pushCardIndex(card)
+          this.getListCard()
+        })
+
         let container = this.$el.querySelector('#col--body')
         container.scrollTop = container.scrollHeight;
         this.titleForNewCard = '';
@@ -132,11 +135,8 @@ export default {
     },
 
 
-    getListCard(){
-      //TODO
-      //this.listCards = this.CARDS(this.idColumn)
-      //this.listCards = this.TEST_CARDS(this.idColumn)
-      this.listCards = this.SORT_CARDS_COL({idCol:this.idColumn,indexCards:this.INDEX_CARDS})
+    getListCard() {
+      this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
     }
   },
   data() {
@@ -150,7 +150,7 @@ export default {
     }
   }, computed: {
     ...mapGetters([
-      'CARDS_COL','INDEX_CARDS','TEST_CARDS','CARDS','SORT_CARDS_COL'
+      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL'
     ]),
     dragOptions() {
       return {
@@ -165,8 +165,13 @@ export default {
       return len > 2
     }
   },
-  beforeMount(){
+  beforeMount() {
     this.getListCard()
+  },
+  watch: {
+    INDEX_CARDS() {
+      this.getListCard()
+    }
   }
 }
 
@@ -189,8 +194,8 @@ export default {
   margin: 1%;
 }
 
-.ghost{
-  background-color: rgba(255,150,150,30%);
+.ghost {
+  background-color: rgba(255, 150, 150, 30%);
 }
 
 #col-header {

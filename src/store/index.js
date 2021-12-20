@@ -14,10 +14,6 @@ export default new Vuex.Store({
         cardsIndexModule
     },
     getters: {
-        SORT_COLUMNS(state){
-            console.log("-------------SORT_COLUMNS-------------")
 
-            return state.cols;
-        },
     }
 })

@@ -41,9 +41,8 @@ const cardModule = {
                     console.log(error);
                 })
         },
-        pushCard: ({commit}, card) => {
-            console.log("\n\n\n---------pushCard----------\n\n\n");
-            axios.post(PATH + '/pushCard', {
+        pushCard: async ({commit}, card) => {
+            await axios.post(PATH + '/pushCard', {
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
@@ -52,8 +51,10 @@ const cardModule = {
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushCard', card)
+                return "Ok"
             }).catch(function (error) {
                 console.log(error);
+                return "error"
             });
         },
         delCard: ({commit}, idCard) => {
@@ -82,14 +83,10 @@ const cardModule = {
         },
     },
     getters:{
-        CARDS: (state) => (idCol) => {
-          return state.cards.filter(x => x.idColumn === idCol)
-        },
-
         CARDS_COL: (state) => (idCol) => {
             return state.cards.filter(card => card.idColumn === idCol);
         },
-        SORT_CARDS_COL: (state) => ({idCol, indexCards}) => {
+        SORTED_CARDS_COL: (state) => ({idCol, indexCards}) => {
             let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idCol)[0]:[]
             let result = []//state.cards.filter(x=>x.idColumn === idCol)
             listIndex.cards.forEach(idCard => {
@@ -99,19 +96,6 @@ const cardModule = {
                 }
             })
             return result;
-        },
-        TEST_CARDS: (state) => {
-            /*let indexCards = (state.INDEX_CARDS)?state.INDEX_CARDS:[]
-
-            let listIndex = (indexCards.length>0)?indexCards.filter(data => data.idIndex === idColumn)[0].cards:[]
-            let result = []//state.cards.filter(x=>x.idColumn === idCol)
-            listIndex.forEach(idCard => {
-                let cards = state.cards.filter(card => card.idCard === idCard);
-                if(cards.length){
-                    result.push(cards[0])
-                }
-            })*/
-            return state.cards//result;
         }
     }
 }

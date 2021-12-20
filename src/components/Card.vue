@@ -51,7 +51,7 @@ export default {
   computed: {},
   methods: {
     ...mapActions([
-       'updateCard','delCard','pushCardIndex','removeIndexCard','updateCardIndex'
+      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex'
     ]),
     addDecs() {
       let card = {
@@ -61,7 +61,8 @@ export default {
         desc: 'Default description'
       }
       this.updateCard(card)
-    },deleteCard() {
+    },
+    async deleteCard() {
       let card = {
         idCard: this.card.idCard,
         idColumn: this.card.idColumn,
@@ -69,6 +70,8 @@ export default {
       this.delCard(card.idCard)
       this.removeIndexCard(card)
       this.updateCardIndex(card.idColumn)
+
+      this.$emit('updateView')
     },
     editCard() {
       if (this.edited) {
@@ -152,7 +155,7 @@ p {
   word-wrap: break-word;
 }
 
-h4{
+h4 {
   text-overflow: ellipsis;
   max-width: 180px;
   white-space: nowrap;
