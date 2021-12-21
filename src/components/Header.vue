@@ -2,7 +2,6 @@
   <div id="header">
     <UserCard msg="Username"/>
     <b-button variant="outline-primary" class="m-1">LogIn</b-button>
-    <b-button variant="outline-primary" class="m-1">logOut</b-button>
   </div>
 </template>
 

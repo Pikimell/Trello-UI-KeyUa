@@ -1,10 +1,11 @@
 import axios from "axios";
+
 const PATH = "http://localhost:3000";
 const columnModule = {
-    state:{
+    state: {
         cols: []
     },
-    mutations:{
+    mutations: {
         loadColumns: (state, columns) => {
             state.cols = columns;
         },
@@ -12,10 +13,10 @@ const columnModule = {
             state.cols.push(column);
         },
         delColumn: (state, idColumn) => {
-            state.cols = state.cols.filter(x=> x.idColumn !== idColumn)
+            state.cols = state.cols.filter(x => x.idColumn !== idColumn)
         },
         editTitleCol: (state, {idColumn, title}) => {
-            for (let i = 0; i < state.cols.length; i++) {//TODO
+            for (let i = 0; i < state.cols.length; i++) {
                 if (state.cols[i].idColumn === idColumn) {
                     state.cols[i].title = title;
                     break;
@@ -25,31 +26,25 @@ const columnModule = {
         sortListColumn: (state, index) => {
             let sortList = [];
             let listCol = state.cols;
-                index.forEach(idCol=>{
-                    let col = listCol.filter(col => col.idColumn === idCol)[0]
-                    sortList.push(col)
-                })
+            index.forEach(idCol => {
+                let col = listCol.filter(col => col.idColumn === idCol)[0]
+                sortList.push(col)
+            })
             state.cols = sortList
         }
     },
-    actions:{
+    actions: {
         loadColumns: ({commit}) => {
             axios.get(PATH + '/getColumns')
                 .then(function (response) {
                     let cols = response.data.Items;
                     axios.get(PATH + '/getColIndexes')
                         .then(function (response) {
-                            let colIndex = JSON.parse(response.data.Items[0].colIndexes).columns
+                            let colIndex = JSON.parse(response.data.Items.filter(x => x.idIndex === "columns")[0].colIndexes).columns
                             commit('loadColumns', cols)
                             commit('loadColumnIndexes', colIndex)
                             commit('sortListColumn', colIndex)
-                            console.log(cols)
                         })
-                        .catch(function (error) {
-                            console.log(error);
-                        })
-
-
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -60,7 +55,7 @@ const columnModule = {
                 idColumn: column.idColumn,
                 title: column.title
             }).then(function (response) {
-                if (response.statusText === "OK"){
+                if (response.statusText === "OK") {
                     commit('pushColumn', column);
                 }
             }).catch(function (error) {
@@ -72,14 +67,13 @@ const columnModule = {
                 .then(function (response) {
                     if (response.statusText === "OK") {
                         commit('delColumn', idColumn)
-                        //TODO delete cards of columns
                     }
                 }).catch(function (error) {
                 console.log(error);
             });
         },
         editTitleCol: ({commit}, props) => {
-            axios.put(PATH + `/updateColumn/${props.idColumn}`,{
+            axios.put(PATH + `/updateColumn/${props.idColumn}`, {
                 title: props.title,
             }).then(function (response) {
                 if (response.statusText === "OK")
@@ -88,11 +82,11 @@ const columnModule = {
                 console.log(error);
             });
         },
-        sortListColumn: ({commit}, index)=> {
-            commit('sortListColumn',index)
+        sortListColumn: ({commit}, index) => {
+            commit('sortListColumn', index)
         }
     },
-    getters:{
+    getters: {
         COLUMNS(state) {
             return state.cols
         }
