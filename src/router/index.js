@@ -13,7 +13,7 @@ export default new VueRouter({
             component: MainPage
         },
         {
-            path:"/authorization",
+            path:"/sign-in",
             component: Authorization
         },
         {
