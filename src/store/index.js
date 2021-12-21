@@ -12,8 +12,5 @@ export default new Vuex.Store({
         cardModule,
         columnIndexModule,
         cardsIndexModule
-    },
-    getters: {
-
     }
 })

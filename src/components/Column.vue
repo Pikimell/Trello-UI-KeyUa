@@ -1,17 +1,17 @@
 <template>
-  <div class="--column">
+  <div class="body-column">
     <div id="col-header">
       <b-form-input class="col-title" id="inp-title"
                     v-if="this.edited"
-                    v-model="edTitle"/>
+                    v-model="editedTitleColumn"/>
       <h5 class="col-title" id="out-title"
-          v-else>{{ edTitle }}</h5>
+          v-else>{{ editedTitleColumn }}</h5>
 
       <div>
         <BButton @click="this.editTitleColumn"
                  pill class="col-del"
                  size="sm"
-                 variant="outline-secondary">{{ dataBut }}
+                 variant="outline-secondary">{{ dataBtn }}
         </BButton>
         <BButton @click="this.delCol"
                  pill class="col-del"
@@ -34,11 +34,11 @@
     <div>
       <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
       <b-form-input
-          v-if="showAdd"
+          v-if="showBtnAdd"
           v-model="titleForNewCard"
           class="inp--new-card"
           placeholder="Enter title for new Card"
-          :state="nameState1"
+          :state="validationTitleLenth"
       />
     </div>
 
@@ -90,15 +90,15 @@ export default {
     editTitleColumn() {
 
       if (this.edited) {
-        this.dataBut = '✎';
-        if (this.title !== this.edTitle)
+        this.dataBtn = '✎';
+        if (this.title !== this.editedTitleColumn)
           this.editTitleCol({
             idColumn: this.idColumn,
-            title: this.edTitle
+            title: this.editedTitleColumn
           })
       } else {
-        this.dataBut = '✔';
-        this.newTitle = this.edTitle;
+        this.dataBtn = '✔';
+        this.newTitle = this.editedTitleColumn;
       }
       this.edited = !this.edited;
     },
@@ -114,7 +114,7 @@ export default {
       this.visibleButtonScroll()
     },
     async newCard() {
-      if (this.nameState1) {
+      if (this.validationTitleLenth) {
         let card = {
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
@@ -131,7 +131,7 @@ export default {
         container.scrollTop = container.scrollHeight;
         this.titleForNewCard = '';
       }
-      this.showAdd = !this.showAdd;
+      this.showBtnAdd = !this.showBtnAdd;
     },
 
 
@@ -141,11 +141,11 @@ export default {
   },
   data() {
     return {
-      showAdd: false,
+      showBtnAdd: false,
       titleForNewCard: '',
       edited: false,
-      dataBut: '✎',
-      edTitle: this.title,
+      dataBtn: '✎',
+      editedTitleColumn: this.title,
       listCards: []
     }
   }, computed: {
@@ -160,7 +160,7 @@ export default {
         ghostClass: "ghost"
       };
     },
-    nameState1() {
+    validationTitleLenth() {
       let len = this.titleForNewCard.length
       return len > 2
     }
@@ -180,7 +180,7 @@ export default {
 
 
 <style scoped>
-.--column {
+.body-column {
   display: flex;
   width: 300px;
   height: 93%;

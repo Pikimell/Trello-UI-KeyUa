@@ -8,10 +8,8 @@ const cardsIndexModule = {
     mutations:{
         loadCardIndexes: (state, cardIndex) => {
             state.cardIndexes = cardIndex
-            console.log("Индексы карточек были загруэжены!")
         },
         updateCardIndex: (state, idColumn) => {
-            console.log("Изменения индексов карточек отправлены в БД!")
             try{
                 let cardsIndex = JSON.stringify({
                     cards: state.cardIndexes.
@@ -19,46 +17,40 @@ const cardsIndexModule = {
                 })
                 axios.put(PATH + `/updateCardsIndexes/${idColumn}`,{
                     colIndexes: cardsIndex
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                })
             }catch(err){
                 console.log(err)
             }
         },
         createIndexForCard: (state, idColumn) => {
-            console.log("Инициализация массива индексов карточек!")
             state.cardIndexes.push({
                 idIndex: idColumn,
                 cards: []
             })
         },
         pushCardIndexM: (state,{idColumn,idCard}) => {
-            console.log("Был добавлен индекс карточки!")
 
             try{
-                state.cardIndexes = state.cardIndexes.map(data => {
-                    if(data.idIndex === idColumn)
-                        data.cards.push(idCard)
-                    return data
+                state.cardIndexes = state.cardIndexes.map(element => {
+                    if(element.idIndex === idColumn)
+                        element.cards.push(idCard)
+                    return element
                 })
-            }catch{
-                console.log("pushIndexCard ERROR")
+            }catch (err){
+                console.log(err)
             }
-
         },
         delCardIndexes: (state, idColumn) => {
             console.log("Были удалены индексы карточек!")
             try{
-                state.cardIndexes = state.cardIndexes.filter(x=> x.idIndex !== idColumn)
-            }catch{
-                console.log("delCardIndexes ERROR")
+                state.cardIndexes = state.cardIndexes.filter(card=> card.idIndex !== idColumn)
+            }catch (err){
+                console.log(err)
             }
         },
         removeIndexCard: (state, {idColumn, idCard}) => {
             for(let i=0;i<state.cardIndexes.length;i++){
                 if(state.cardIndexes[i].idIndex === idColumn){
-                    console.log(state.cardIndexes[i])
                     state.cardIndexes[i].cards =
                         state.cardIndexes[i].cards.
                         filter(idCard1=> idCard1 !== idCard)
@@ -102,7 +94,6 @@ const cardsIndexModule = {
             commit('updateCardIndex', data.idColumn)
         },
         delCardIndexes: ({commit},idColumn) => {
-            console.log("Удаление индексов каточек!")
             axios.delete(PATH + `/deleteCardIndexes/${idColumn}`)
                 .then(function (response) {
                     if (response.statusText === "OK") {

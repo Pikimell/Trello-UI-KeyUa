@@ -12,14 +12,14 @@
           v-model="titleNewColumn"
           class="add--col--elem"
           placeholder="Enter title for new column"
-          :state="nameState">
+          :state="validationTitleLength">
       </b-form-input>
 
       <BButton
           class="add--col--elem"
           v-on:click="addColumn({
             title:titleNewColumn,
-            state:nameState
+            state:validationTitleLength
           });titleNewColumn='';"
       >
         Create Column
@@ -27,7 +27,7 @@
 
     </div>
     <draggable
-        class="--columns"
+        class="columns"
         v-bind="dragOptions"
         :list="this.COLUMNS"
         @end="moveCol">
@@ -40,10 +40,10 @@
     </draggable>
 
     <div class="foot">
-      <BButton id="foot-but-left" class="fotter--but" pill v-on:click="scrollToDir('left');" >
+      <BButton id="footer-btn-left" class="footer--btn" pill v-on:click="scrollToDir('left');" >
         <b-icon icon="arrow-left-circle" font-scale="2"></b-icon>
       </BButton>
-      <BButton id="foot-but-right" class="fotter--but" pill v-on:click="scrollToDir('right');" >
+      <BButton id="footer-btn-right" class="footer--btn" pill v-on:click="scrollToDir('right');" >
         <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
       </BButton>
     </div>
@@ -61,7 +61,7 @@ export default {
     return {
       titleNewColumn: '',
       showInputTitle: false,
-      editable: false
+      editedColumn: false
     }
   },
   components: {
@@ -79,7 +79,7 @@ export default {
         ghostClass: "ghost"
       };
     },
-    nameState() {
+    validationTitleLength() {
       return this.titleNewColumn.length > 2
     }
   },
@@ -110,9 +110,9 @@ export default {
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title
           }
-          this.pushColumn(col) // PUSH COLUMN
-          this.pushIndex(col.idColumn) // PUSH INDEX
-          this.createIndexForCard(col.idColumn)// Create Index for Cards in Column
+          this.pushColumn(col)
+          this.pushIndex(col.idColumn)
+          this.createIndexForCard(col.idColumn)
         }
       }else{
         myDiv.style.maxHeight = "140px";
@@ -122,14 +122,14 @@ export default {
     },
     visibleButtonScroll(){
       let con = document.getElementById('columns-container')
-      let buts = document.getElementsByClassName('fotter--but')
+      let buttons = document.getElementsByClassName('footer--btn')
 
       if(con.scrollWidth > con.offsetWidth){
-        buts[0].style.visibility = "visible";
-        buts[1].style.visibility = "visible";
+        buttons[0].style.visibility = "visible";
+        buttons[1].style.visibility = "visible";
       }else{
-        buts[0].style.visibility = "hidden";
-        buts[1].style.visibility = "hidden";
+        buttons[0].style.visibility = "hidden";
+        buttons[1].style.visibility = "hidden";
       }
     }
   },
@@ -158,7 +158,7 @@ export default {
   flex-wrap: nowrap;
 }
 
-.--columns {
+.columns {
   display: flex;
   justify-content: flex-start;
   align-content: flex-start;
@@ -201,19 +201,19 @@ export default {
   display: flex;
 }
 
-.fotter--but{
+.footer--btn{
   opacity: 0.3;
   padding: 3px 3px 0 3px ;
 }
-.fotter--but:hover{
+.footer--btn:hover{
   opacity: 1;
 }
 
-#foot-but-left{
+#footer-btn-left{
   position: absolute;
   left:30px
 }
-#foot-but-right{
+#footer-btn-right{
   position: absolute;
   right:30px ;
 }

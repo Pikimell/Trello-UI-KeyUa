@@ -1,40 +1,40 @@
 <template>
   <div class="col--card">
     <div id="title">
-      <h4 v-if="!edited">{{ card.title }}</h4>
+      <h4 v-if="!isEditedCard">{{ card.title }}</h4>
       <b-form-input
           v-model="newTitle"
-          v-if="edited"
+          v-if="isEditedCard"
           id="inp-title"
           placeholder="Enter new title"
       />
       <div>
-        <b-button size="sm" class="-but"
+        <bbtnton size="sm" class="btn"
                   @click="editCard"
                   variant="outline-secondary">
-          {{ dataBut }}
-        </b-button>
+          {{ dataBtn }}
+        </bbtnton>
 
-        <b-button size="sm" class="-but"
+        <bbtnton size="sm" class="btn"
                   @click="deleteCard"
                   variant="outline-secondary">
           ✕
-        </b-button>
+        </bbtnton>
       </div>
 
 
     </div>
     <div id="card--body">
-      <p v-if="!edited && this.card.description.length > 0">{{ card.description }}</p>
+      <p v-if="!isEditedCard && this.card.description.length > 0">{{ card.description }}</p>
       <b-form-textarea
-          v-if="edited" id="inp-desc"
+          v-if="isEditedCard" id="inp-desc"
           v-model="newDescription"/>
-      <b-button
-          v-if="this.card.description.length === 0 && !edited"
+      <bbtnton
+          v-if="this.card.description.length === 0 && !isEditedCard"
           @click="addDecs"
           variant="outline-primary">
         Add Description to this Card
-      </b-button>
+      </bbtnton>
     </div>
 
   </div>
@@ -74,8 +74,8 @@ export default {
       this.$emit('updateView')
     },
     editCard() {
-      if (this.edited) {
-        this.dataBut = '✎';
+      if (this.isEditedCard) {
+        this.dataBtn = '✎';
 
         this.updateCard({
           idCard: this.card.idCard,
@@ -85,17 +85,17 @@ export default {
         })
 
       } else {
-        this.dataBut = '✔';
+        this.dataBtn = '✔';
         this.newTitle = this.card.title;
         this.newDescription = this.card.description;
       }
-      this.edited = !this.edited;
+      this.isEditedCard = !this.isEditedCard;
     }
   },
   data() {
     return {
-      edited: false,
-      dataBut: '✎',
+      isEditedCard: false,
+      dataBtn: '✎',
       newTitle: '',
       newDescription: ''
     }
@@ -143,7 +143,7 @@ Vue.use(IconsPlugin)
   min-height: 100px;
 }
 
-.-but {
+.btn {
   max-height: 32px;
   margin-left: 5px;
   padding: 0 5px 0 5px;
