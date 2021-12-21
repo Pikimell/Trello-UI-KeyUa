@@ -1,10 +1,11 @@
 import axios from "axios";
+
 const PATH = "http://localhost:3000";
 const cardModule = {
-    state:{
+    state: {
         cards: []
     },
-    mutations:{
+    mutations: {
         loadCards: (state, cards) => {
             state.cards = cards;
         },
@@ -19,19 +20,19 @@ const cardModule = {
             let index = state.cards.findIndex(isPrime);
             state.cards.splice(index, 1)
         },
-        editCard: (state, {idCard, title,desc}) => {
-            for (let i = 0; i < state.cards.length; i++) {//TODO
+        editCard: (state, {idCard, title, desc, idColumn}) => {
+            for (let i = 0; i < state.cards.length; i++) {
                 if (state.cards[i].idCard === idCard) {
                     state.cards[i].title = title;
                     state.cards[i].description = desc
+                    state.cards[i].idColumn = idColumn
                     break;
                 }
             }
         },
     },
-    actions:{
+    actions: {
         loadCards: ({commit}) => {
-            console.log("\n\n\n---------loadCards----------\n\n\n");
             axios.get(PATH + '/getCards')
                 .then(function (response) {
                     commit('loadCards', response.data.Items)
@@ -40,9 +41,8 @@ const cardModule = {
                     console.log(error);
                 })
         },
-        pushCard: ({commit}, card) => {
-            console.log("\n\n\n---------pushCard----------\n\n\n");
-            axios.post(PATH + '/pushCard', {
+        pushCard: async ({commit}, card) => {
+            await axios.post(PATH + '/pushCard', {
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
@@ -51,12 +51,13 @@ const cardModule = {
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('pushCard', card)
+                return "Ok"
             }).catch(function (error) {
                 console.log(error);
+                return "error"
             });
         },
         delCard: ({commit}, idCard) => {
-            console.log("\n\n\n---------delCard----------\n\n\n");
             axios.delete(PATH + `/deleteCard/${idCard}`).then(function (response) {
                 if (response.statusText === "OK")
                     commit('delCard', idCard)
@@ -66,12 +67,11 @@ const cardModule = {
 
         },
         updateCard: ({commit}, props) => {
-            console.log("\n\n\n---------updateCard----------\n\n\n");
-            axios.put(PATH + `/updateCard/${props.idCard}`,{
+            axios.put(PATH + `/updateCard/${props.idCard}`, {
                 idCard: props.idCard,
                 title: props.title,
                 description: props.desc,
-                indexCard: props.indexCard
+                idColumn: props.idColumn
             }).then(function (response) {
                 if (response.statusText === "OK")
                     commit('editCard', props)
@@ -80,23 +80,21 @@ const cardModule = {
             });
         },
     },
-    getters:{
-        CARDS(state) {
-            return state.cards;
+    getters: {
+        CARDS_COL: (state) => (idCol) => {
+            return state.cards.filter(card => card.idColumn === idCol);
         },
-        CARDS_COL: (state) => ({idCol, sorted}) => {
-            let result = state.cards.filter(x=>x.idColumn === idCol)
-            if(sorted) result = result.sort((a, b) => {
-                if (a.indexCard > b.indexCard) {
-                    return 1;
+        SORTED_CARDS_COL: (state) => ({idCol, indexCards}) => {
+            let listIndex = (indexCards.length > 0) ? indexCards.filter(data => data.idIndex === idCol)[0] : []
+            let result = []
+            listIndex.cards.forEach(idCard => {
+                let cards = state.cards.filter(card => card.idCard === idCard);
+                if (cards.length) {
+                    result.push(cards[0])
                 }
-                if (a.indexCard < b.indexCard) {
-                    return -1;
-                }
-                return 0;
             })
             return result;
-        },
+        }
     }
 }
 
