@@ -9,17 +9,17 @@
           placeholder="Enter new title"
       />
       <div>
-        <bbtnton size="sm" class="btn"
+        <BButton size="sm" class="btn"
                   @click="editCard"
                   variant="outline-secondary">
           {{ dataBtn }}
-        </bbtnton>
+        </BButton>
 
-        <bbtnton size="sm" class="btn"
+        <BButton size="sm" class="btn"
                   @click="deleteCard"
                   variant="outline-secondary">
           ✕
-        </bbtnton>
+        </BButton>
       </div>
 
 
@@ -29,12 +29,12 @@
       <b-form-textarea
           v-if="isEditedCard" id="inp-desc"
           v-model="newDescription"/>
-      <bbtnton
+      <BButton
           v-if="this.card.description.length === 0 && !isEditedCard"
-          @click="addDecs"
+          @click="addDesc"
           variant="outline-primary">
         Add Description to this Card
-      </bbtnton>
+      </BButton>
     </div>
 
   </div>
@@ -53,7 +53,7 @@ export default {
     ...mapActions([
       'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex'
     ]),
-    addDecs() {
+    addDesc() {
       let card = {
         idCard: this.card.idCard,
         title: this.card.title,
