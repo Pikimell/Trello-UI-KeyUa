@@ -1,6 +1,9 @@
 <template>
-  <div id="app-body">
-    <Columns />
+  <div>
+    <Header/>
+    <div id="app-body">
+      <Columns />
+    </div>
   </div>
 </template>
 
@@ -11,7 +14,7 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
 import Columns from '../components/Columns'
-
+import Header from "../components/Header";
 export default {
   name: "MainPage",
   data() {
@@ -20,7 +23,7 @@ export default {
     }
   },
   components: {
-    Columns
+    Columns,Header
   }
 }
 
@@ -31,6 +34,7 @@ Vue.use(IconsPlugin)
 <style scoped>
 #app-body {
   overflow: scroll;
+  min-height: 90vh;
 }
 
 #app-body::-webkit-scrollbar {

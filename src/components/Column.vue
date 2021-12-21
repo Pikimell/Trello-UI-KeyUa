@@ -199,7 +199,7 @@ export default {
 }
 
 #col-header {
-  background-color: #222a41;
+  background-color: #333333;
   text-align: left;
   padding-left: 10px;
   color: silver;
@@ -214,7 +214,8 @@ export default {
 #col--body {
   min-height: 115px;
   max-height: 530px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #inp-title {

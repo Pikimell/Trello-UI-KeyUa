@@ -152,10 +152,10 @@ export default {
 
 #columns-container{
   margin:0;
-  background-color: rgba(155, 155, 155, 0.3);
   width: 100%;
   overflow-x: auto;
   flex-wrap: nowrap;
+  min-height: 94vh;
 }
 
 .columns {
@@ -182,6 +182,7 @@ export default {
   max-height: 80px;
   position:absolute;
   bottom: 0;
+  left:90px;
 }
 
 
@@ -199,6 +200,8 @@ export default {
   width:100%;
   height: 50px;
   display: flex;
+  bottom: 20px;
+  position: absolute;
 }
 
 .footer--btn{

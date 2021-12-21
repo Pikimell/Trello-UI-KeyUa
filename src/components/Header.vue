@@ -30,6 +30,6 @@ Vue.use(IconsPlugin)
     justify-content: flex-end;
     width: 100%;
     position: relative;
-    background: #2c3e50;
+    background: #282828;
   }
 </style>
