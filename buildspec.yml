@@ -4,16 +4,8 @@ phases:
   install:
     commands:
       - npm install
-  build:
-    commands:
       - npm run build
+      - aws s3 sync ./dist $S3_BUCKET
 artifacts:
   files:
     - '**/*'
-  secondary-artifacts:
-    artifact1:
-      files:
-        - '**/*'
-      base-directory: dist
-      name: app
-      discard-paths: no
