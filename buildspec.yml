@@ -12,16 +12,8 @@ artifacts:
     - '**/*'
   secondary-artifacts:
     artifact1:
+      files:
+        - '**/*'
       base-directory: dist
-      files:
-        - '**/*'
-      name: webapp
+      name: app
       discard-paths: no
-    artifact2:
-      base-directory: public
-      files:
-        - '**/*'
-      name: template
-      discard-paths: yes
-  discard-path: no
-  base-directory: dist
