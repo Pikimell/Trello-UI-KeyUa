@@ -9,7 +9,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - aws s3 sync arn:aws:s3:::volodka-trello-ui/
+      - aws s3 sync ./dist $S3_BUCKET
 artifacts:
   files:
     - '**/*'
