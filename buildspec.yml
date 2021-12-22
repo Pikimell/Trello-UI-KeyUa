@@ -10,5 +10,18 @@ phases:
 artifacts:
   files:
     - '**/*'
+  secondary-artifacts:
+    artifact1:
+      base-directory: dist
+      files:
+        - '**/*'
+      name: webapp
+      discard-paths: no
+    artifact2:
+      base-directory: public
+      files:
+        - '**/*'
+      name: template
+      discard-paths: yes
   discard-path: no
   base-directory: dist
