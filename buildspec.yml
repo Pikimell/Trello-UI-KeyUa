@@ -9,4 +9,4 @@ phases:
       - npm run build
   post_build:
     commands:
-      - aws s3 sync ./dist arn:aws:s3:::volodka-trello-ui/
+      - aws s3 sync ./dist s3:::volodka-trello-ui/
