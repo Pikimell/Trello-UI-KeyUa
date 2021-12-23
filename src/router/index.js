@@ -14,11 +14,12 @@ export default new VueRouter({
         },
         {
             path:"/sign-in",
+            name:"signin",
             component: Authorization
         },
         {
             path: '*',
-            redirect: {name: 'trello'}
+            redirect: {name: 'signin'}
         }
     ]
 })
