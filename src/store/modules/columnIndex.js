@@ -1,5 +1,6 @@
 import axios from "axios";
-const PATH = "http://localhost:3000";
+import {PATH} from "../consts";
+
 const columnIndexModule = {
     state:{
         colIndexes: []

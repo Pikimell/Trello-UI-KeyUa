@@ -1,6 +1,6 @@
 import axios from "axios";
+import {PATH} from "../consts";
 
-const PATH = "http://localhost:3000";
 const cardModule = {
     state: {
         cards: []
