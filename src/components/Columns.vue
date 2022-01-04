@@ -38,7 +38,6 @@
           v-bind:key="col.idColumn"
       />
     </draggable>
-
     <div class="foot">
       <BButton id="footer-btn-left" class="footer--btn" pill v-on:click="scrollToDir('left');" >
         <b-icon icon="arrow-left-circle" font-scale="2"></b-icon>
@@ -47,12 +46,14 @@
         <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
       </BButton>
     </div>
+    <Spinner v-if="this.loadingPage"/>
   </div>
 </template>
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
 import draggable from 'vuedraggable'
+import MySpinner from "./Spiner";
 
 
 export default {
@@ -61,10 +62,12 @@ export default {
     return {
       titleNewColumn: '',
       showInputTitle: false,
-      editedColumn: false
+      editedColumn: false,
+      loadingPage: false
     }
   },
   components: {
+    Spinner: MySpinner,
     Column,draggable
   },
   computed: {
@@ -76,7 +79,8 @@ export default {
         animation: 200,
         group: "columns",
         disabled: false,
-        ghostClass: "ghost"
+        ghostClass: "ghost",
+        loadingPage: false
       };
     },
     validationTitleLength() {
@@ -133,13 +137,15 @@ export default {
       }
     }
   },
-  beforeMount() {
-    this.loadColumns()
-    this.loadColumnIndexes()
-    this.loadCards()
-    this.loadCardIndexes();
+  async beforeMount() {
+    this.loadingPage = true
+    await this.loadColumns()
+    await this.loadColumnIndexes()
+    await this.loadCards()
+    await this.loadCardIndexes();
   },
   mounted(){
+    this.loadingPage = false
     this.sortListColumn(this.INDEX_COL)
   },
   beforeUpdate() {
