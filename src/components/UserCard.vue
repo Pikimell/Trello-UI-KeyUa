@@ -1,6 +1,6 @@
 <template>
   <span>
-    <b-avatar class="m-1" src="https://placekitten.com/300/300" variant="primary" text="BV"></b-avatar>
+    <b-avatar class="m-1" src="https://source.unsplash.com/300x300/?random=1&user,avatar,body" variant="primary" text="BV"></b-avatar>
   </span>
 </template>
 

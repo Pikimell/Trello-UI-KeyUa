@@ -6,7 +6,7 @@
         <span class="txt">Username</span>
       </div>
       <div class="input-bar">
-        <input class="input" type="text" name="username" tabindex="1">
+        <input class="input" type="text" name="username" tabindex="1" v-model="email">
         <span></span>
       </div>
 
@@ -15,12 +15,12 @@
         <a href="#" class="txt2" id="forgot-pass" tabindex="5">Forgot?</a>
       </div>
       <div class="input-bar">
-        <input class="input" type="password" name="pass" tabindex="2">
+        <input class="input" type="password" name="pass" tabindex="2" v-model="password">
         <span></span>
       </div>
 
       <div id="container--button">
-        <button class="form-btn" tabindex="3" @click="signIn">Sign In</button>
+        <button class="form-btn" tabindex="3" @click="userSignIn">Sign In</button>
       </div>
 
       <div class="form-footer">
@@ -31,16 +31,25 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   name: "LoginForm",
   data(){
     return {
-
+      email: '',
+      password: ''
     }
   },
   methods: {
-    signIn(){
-
+    ...mapActions([
+      'signIn'
+    ]),
+    userSignIn(){
+      this.signIn({
+        email:this.email,
+        password:this.password
+      })
     }
   }
 }

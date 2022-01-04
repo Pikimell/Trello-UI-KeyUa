@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from 'vuex'
 
-import {columnModule,cardModule,columnIndexModule,cardsIndexModule} from "./modules";
+import {columnModule,cardModule,columnIndexModule,cardsIndexModule,authorizationModule} from "./modules";
 
 Vue.use(Vuex)
 
@@ -11,6 +11,7 @@ export default new Vuex.Store({
         columnModule,
         cardModule,
         columnIndexModule,
-        cardsIndexModule
+        cardsIndexModule,
+        authorizationModule
     }
 })

@@ -11,13 +11,14 @@ const cardsIndexModule = {
         },
         updateCardIndex: (state, idColumn) => {
             try{
+                let token = localStorage.getItem('userIdToken')
                 let cardsIndex = JSON.stringify({
                     cards: state.cardIndexes.
                     filter(data => data.idIndex === idColumn)[0].cards
                 })
                 axios.put(PATH + `/updateCardsIndexes/${idColumn}`,{
                     colIndexes: cardsIndex
-                })
+                },{headers: {"Authorization": `Bearer ${token}`}})
             }catch(err){
                 console.log(err)
             }
@@ -41,7 +42,6 @@ const cardsIndexModule = {
             }
         },
         delCardIndexes: (state, idColumn) => {
-            console.log("Были удалены индексы карточек!")
             try{
                 state.cardIndexes = state.cardIndexes.filter(card=> card.idIndex !== idColumn)
             }catch (err){
@@ -71,7 +71,8 @@ const cardsIndexModule = {
     },
     actions:{
         loadCardIndexes: ({commit}) => {
-            axios.get(PATH + '/getCardIndexes')
+            let token = localStorage.getItem('userIdToken')
+            axios.get(PATH + '/getCardIndexes',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
                     let items = response.data.Items.filter(data => data.idIndex !== "columns")
                     items = items.map((indexes) => {
@@ -94,11 +95,11 @@ const cardsIndexModule = {
             commit('updateCardIndex', data.idColumn)
         },
         delCardIndexes: ({commit},idColumn) => {
-            axios.delete(PATH + `/deleteCardIndexes/${idColumn}`)
-                .then(function (response) {
-                    if (response.statusText === "OK") {
+            let token = localStorage.getItem('userIdToken')
+            axios.delete(PATH + `/deleteCardIndexes/${idColumn}`,{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                         commit('delCardIndexes', idColumn)
-                    }
+
                 }).catch(function (error) {
                 console.log(error);
             });

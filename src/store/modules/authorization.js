@@ -1,5 +1,6 @@
 import axios from "axios";
 import {PATH} from "../consts";
+import router from "../../router";
 
 
 
@@ -11,19 +12,31 @@ const authorizationModule = {
     mutations:{
         addUserInfo(state, data){
             state.userInfo[0] = data;
+            console.log(data)
+            state.userIdToken[0] = data.idToken.jwtToken;
         }
     },
     actions:{
         async signIn({commit},params){
-            axios.post(PATH+'/signIn',JSON.stringify(params))
-                .then(async res => {
-                    commit('addUserInfo',res.data);
-                    localStorage.setItem('userIdToken', res.data.token.idToken)
-                })
+            try{
+                axios.post(PATH+'/signIn',JSON.stringify(params))
+                    .then(async res => {
+                        commit('addUserInfo',res.data);
+                        localStorage.setItem('userIdToken', res.data.idToken.jwtToken)
+                        router.push('trello_page')
+                    })
+            }catch (err){
+                console.log(err);
+            }
         }
     },
     getters:{
-
+        userInfo: (state) => {
+            return state.userInfo;
+        },
+        userIdToken: (state) => {
+            return state.userIdToken;
+        },
     }
 }
 
