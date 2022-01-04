@@ -45,10 +45,12 @@ const columnModule = {
                             commit('loadColumns', cols)
                             commit('loadColumnIndexes', colIndex)
                             commit('sortListColumn', colIndex)
+                            return true;
                         })
                 })
                 .catch(function (error) {
                     console.log(error);
+                    return false;
                 })
         },
         pushColumn: async ({commit}, column) => {

@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard','setSpinnerState'
     ]),
     moveCard(data) {
 
@@ -102,19 +102,27 @@ export default {
       }
       this.edited = !this.edited;
     },
-    delCol() {
-      let cardsCol = this.CARDS_COL(this.idColumn)
-      cardsCol.forEach(x => {
-        this.delCard(x.idCard)
-      })
+    async delCol() {
+      try{
+        this.setSpinnerState(true)
+        let cardsCol = this.CARDS_COL(this.idColumn)
+        cardsCol.forEach(x => {
+          this.delCard(x.idCard)
+        });
+        await this.delColumn(this.idColumn)
 
-      this.delColumn(this.idColumn)
-      this.delIndexes(this.idColumn)
-      this.delCardIndexes(this.idColumn)
-      this.visibleButtonScroll()
+        await this.delIndexes(this.idColumn)
+        await this.delCardIndexes(this.idColumn)
+        await this.setSpinnerState(false);
+        this.visibleButtonScroll()
+
+      }catch (err){
+        console.log(err)
+      }
     },
     async newCard() {
       if (this.validationTitleLenth) {
+        this.setSpinnerState(true)
         let card = {
           idColumn: this.idColumn,
           idCard: 'id' + (new Date()).getTime(),
@@ -122,7 +130,7 @@ export default {
           description: ''
         }
 
-        this.pushCard(card).then(()=>{
+        await this.pushCard(card).then(()=>{
           this.pushCardIndex(card)
           this.getListCard()
         })
@@ -130,6 +138,7 @@ export default {
         let container = this.$el.querySelector('#col--body')
         container.scrollTop = container.scrollHeight;
         this.titleForNewCard = '';
+        this.setSpinnerState(false)
       }
       this.showBtnAdd = !this.showBtnAdd;
     },
@@ -166,7 +175,9 @@ export default {
     }
   },
   beforeMount() {
+    this.setSpinnerState(true)
     this.getListCard()
+    this.setSpinnerState(false)
   },
   watch: {
     INDEX_CARDS() {

@@ -46,7 +46,7 @@
         <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
       </BButton>
     </div>
-    <Spinner v-if="this.loadingPage"/>
+    <Spinner/>
   </div>
 </template>
 <script>
@@ -62,8 +62,7 @@ export default {
     return {
       titleNewColumn: '',
       showInputTitle: false,
-      editedColumn: false,
-      loadingPage: false
+      editedColumn: false
     }
   },
   components: {
@@ -103,7 +102,7 @@ export default {
     ...mapActions([
         'pushColumn','loadCards',"loadColumns","indexingColumns",
         "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
-        'loadCardIndexes'
+        'loadCardIndexes','setSpinnerState'
     ]),
     addColumn(props) {
       let myDiv = document.getElementById("add--col")
@@ -138,15 +137,13 @@ export default {
     }
   },
   async beforeMount() {
-    this.loadingPage = true
     await this.loadColumns()
     await this.loadColumnIndexes()
     await this.loadCards()
     await this.loadCardIndexes();
   },
-  mounted(){
-    this.loadingPage = false
-    this.sortListColumn(this.INDEX_COL)
+  async mounted(){
+    await this.sortListColumn(this.INDEX_COL)
   },
   beforeUpdate() {
     this.visibleButtonScroll()
