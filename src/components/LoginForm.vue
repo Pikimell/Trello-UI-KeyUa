@@ -12,7 +12,6 @@
 
       <div class="input-title">
 				<span class="txt">Password</span>
-        <a href="#" class="txt2" id="forgot-pass" tabindex="5">Forgot?</a>
       </div>
       <div class="input-bar">
         <input class="input" type="password" name="pass" tabindex="2" v-model="password">
@@ -21,11 +20,6 @@
 
       <div id="container--button">
         <button class="form-btn" tabindex="3" @click="userSignIn">Sign In</button>
-      </div>
-
-      <div class="form-footer">
-				<span class="txt2">Not a member?</span>
-        <a class="txt2" id="form-sign" tabindex="4">Sign up now</a>
       </div>
     </div>
 </template>
@@ -119,6 +113,7 @@ export default {
   margin-top: 17px;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 60px;
 }
 
 #auth--header{

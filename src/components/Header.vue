@@ -1,7 +1,7 @@
 <template>
   <div id="header">
-    <UserCard msg="Username"/>
-    <b-button variant="outline-primary" class="m-1" @click="logOut">LogOut</b-button>
+    <UserCard msg="Username" v-bind:authorized="this.authorized"/>
+    <b-button variant="outline-primary" class="m-1" @click="logOut">{{ (authorized)?'LogOut':'LogIn' }}</b-button>
   </div>
 </template>
 
@@ -13,6 +13,11 @@ import Vue from "vue";
 import router from "../router";
 export default {
   name: "Header",
+  data() {
+    return {
+      authorized: true
+    }
+  },
   components:{
     UserCard
   },
@@ -20,6 +25,13 @@ export default {
     logOut(){
       localStorage.setItem('userIdToken', '')
       router.push('sign-in')
+    }
+  },
+  beforeMount() {
+    if(localStorage.getItem('userIdToken').length > 10){
+      this.authorized = true;
+    }else{
+      this.authorized = false;
     }
   }
 }
