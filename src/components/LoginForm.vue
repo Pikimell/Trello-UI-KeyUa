@@ -1,5 +1,5 @@
 <template>
-    <form id="auth--body">
+    <div id="auth--body">
       <span class="txt" id="auth--header">Sign In With</span>
 
       <div class="input-title">
@@ -20,19 +20,29 @@
       </div>
 
       <div id="container--button">
-        <button class="form-btn" tabindex="3">Sign In</button>
+        <button class="form-btn" tabindex="3" @click="signIn">Sign In</button>
       </div>
 
       <div class="form-footer">
 				<span class="txt2">Not a member?</span>
         <a class="txt2" id="form-sign" tabindex="4">Sign up now</a>
       </div>
-    </form>
+    </div>
 </template>
 
 <script>
 export default {
-  name: "LoginForm"
+  name: "LoginForm",
+  data(){
+    return {
+
+    }
+  },
+  methods: {
+    signIn(){
+
+    }
+  }
 }
 </script>
 
