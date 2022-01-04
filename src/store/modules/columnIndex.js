@@ -10,6 +10,7 @@ const columnIndexModule = {
             state.colIndexes = colIndex;
         },
         indexingColumns: (state, columns) => {
+            let token = localStorage.getItem('userIdToken')
             let listIndex = [];
             columns.forEach(x=>listIndex.push(x.idColumn))
             state.colIndexes = listIndex
@@ -17,7 +18,8 @@ const columnIndexModule = {
                 colIndexes: JSON.stringify({
                     columns: listIndex
                 })
-            }).catch(function (error) {
+            },{headers: {"Authorization": `Bearer ${token}`}})
+                .catch(function (error) {
                 console.log(error);
             });
         },
@@ -28,18 +30,21 @@ const columnIndexModule = {
             state.colIndexes = state.colIndexes.filter(x=> x !== idColumn)
         },
         refreshInDB: (state) => {
+            let token = localStorage.getItem('userIdToken')
             axios.put(PATH + `/updateIndexes/columns`,{
                 colIndexes: JSON.stringify({
                     columns: state.colIndexes
                 })
-            }).catch(function (error) {
+            },{headers: {"Authorization": `Bearer ${token}`}})
+                .catch(function (error) {
                 console.log(error);
             });
         }
     },
     actions:{
         loadColumnIndexes: ({commit}) => {
-            axios.get(PATH + '/getColIndexes')
+            let token = localStorage.getItem('userIdToken')
+            axios.get(PATH + '/getColIndexes',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
                     commit('loadColumnIndexes', JSON.parse(response.data.Items[0].colIndexes).columns)
                 })

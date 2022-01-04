@@ -33,7 +33,8 @@ const cardModule = {
     },
     actions: {
         loadCards: ({commit}) => {
-            axios.get(PATH + '/getCards')
+            let token = localStorage.getItem('userIdToken')
+            axios.get(PATH + '/getCards',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
                     commit('loadCards', response.data.Items)
                 })
@@ -42,14 +43,15 @@ const cardModule = {
                 })
         },
         pushCard: async ({commit}, card) => {
+            let token = localStorage.getItem('userIdToken')
             await axios.post(PATH + '/pushCard', {
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
                 description: card.description,
                 indexCard: card.indexCard
-            }).then(function (response) {
-                if (response.statusText === "OK")
+            },{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                     commit('pushCard', card)
                 return "Ok"
             }).catch(function (error) {
@@ -58,8 +60,9 @@ const cardModule = {
             });
         },
         delCard: ({commit}, idCard) => {
-            axios.delete(PATH + `/deleteCard/${idCard}`).then(function (response) {
-                if (response.statusText === "OK")
+            let token = localStorage.getItem('userIdToken')
+            axios.delete(PATH + `/deleteCard/${idCard}`,{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                     commit('delCard', idCard)
             }).catch(function (error) {
                 console.log(error);
@@ -67,13 +70,13 @@ const cardModule = {
 
         },
         updateCard: ({commit}, props) => {
+            let token = localStorage.getItem('userIdToken')
             axios.put(PATH + `/updateCard/${props.idCard}`, {
                 idCard: props.idCard,
                 title: props.title,
                 description: props.desc,
                 idColumn: props.idColumn
-            }).then(function (response) {
-                if (response.statusText === "OK")
+            },{headers: {"Authorization": `Bearer ${token}`}}).then(()=>{
                     commit('editCard', props)
             }).catch(function (error) {
                 console.log(error);

@@ -1,7 +1,7 @@
 <template>
   <div id="header">
     <UserCard msg="Username"/>
-    <b-button variant="outline-primary" class="m-1">LogIn</b-button>
+    <b-button variant="outline-primary" class="m-1" @click="logOut">LogOut</b-button>
   </div>
 </template>
 
@@ -10,10 +10,17 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 import UserCard from "../components/UserCard";
 import Vue from "vue";
+import router from "../router";
 export default {
   name: "Header",
   components:{
     UserCard
+  },
+  methods:{
+    logOut(){
+      localStorage.setItem('userIdToken', '')
+      router.push('sign-in')
+    }
   }
 }
 

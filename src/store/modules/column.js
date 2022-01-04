@@ -35,10 +35,11 @@ const columnModule = {
     },
     actions: {
         loadColumns: ({commit}) => {
-            axios.get(PATH + '/getColumns')
+            let token = localStorage.getItem('userIdToken')
+            axios.get(PATH + '/getColumns',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
                     let cols = response.data.Items;
-                    axios.get(PATH + '/getColIndexes')
+                    axios.get(PATH + '/getColIndexes',{headers: {"Authorization": `Bearer ${token}`}})
                         .then(function (response) {
                             let colIndex = JSON.parse(response.data.Items.filter(x => x.idIndex === "columns")[0].colIndexes).columns
                             commit('loadColumns', cols)
@@ -51,32 +52,32 @@ const columnModule = {
                 })
         },
         pushColumn: ({commit}, column) => {
+            let token = localStorage.getItem('userIdToken')
             axios.post(PATH + '/pushColumn', {
                 idColumn: column.idColumn,
                 title: column.title
-            }).then(function (response) {
-                if (response.statusText === "OK") {
+            },{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                     commit('pushColumn', column);
-                }
             }).catch(function (error) {
                 console.log(error);
             });
         },
         delColumn: ({commit}, idColumn) => {
-            axios.delete(PATH + `/deleteColumn/${idColumn}`)
-                .then(function (response) {
-                    if (response.statusText === "OK") {
+            let token = localStorage.getItem('userIdToken')
+            axios.delete(PATH + `/deleteColumn/${idColumn}`,{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                         commit('delColumn', idColumn)
-                    }
                 }).catch(function (error) {
                 console.log(error);
             });
         },
         editTitleCol: ({commit}, props) => {
+            let token = localStorage.getItem('userIdToken')
             axios.put(PATH + `/updateColumn/${props.idColumn}`, {
                 title: props.title,
-            }).then(function (response) {
-                if (response.statusText === "OK")
+            },{headers: {"Authorization": `Bearer ${token}`}})
+                .then(()=>{
                     commit('editTitleCol', props)
             }).catch(function (error) {
                 console.log(error);
