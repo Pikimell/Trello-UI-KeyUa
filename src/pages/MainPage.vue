@@ -28,7 +28,7 @@ export default {
     ]),
 
     refreshTokens(){
-      this.refresh({username:'volodkaposhta@gmail.com',tokens:this.userInfo[0]});
+      this.refresh({username:this.userInfo[0].idToken.payload.email,tokens:this.userInfo[0]});
     }
   },
   components: {
