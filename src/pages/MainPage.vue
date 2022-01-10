@@ -9,12 +9,12 @@
 
 <script>
 import Vue from 'vue'
-import {} from 'vuex'
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
 import Columns from '../components/Columns'
 import Header from "../components/Header";
+import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
   data() {
@@ -22,8 +22,25 @@ export default {
       showInputTitle: false
     }
   },
+  methods:{
+    ...mapActions([
+      'refresh'
+    ]),
+
+    refreshTokens(){
+      this.refresh({username:'volodkaposhta@gmail.com',tokens:this.userInfo[0]});
+    }
+  },
   components: {
     Columns,Header
+  },
+  computed:{
+    ...mapGetters([
+        'userInfo'
+    ])
+  },
+  beforeMount() {
+    setInterval(() => this.refreshTokens(), 3500000);
   }
 }
 
