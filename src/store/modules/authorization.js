@@ -2,8 +2,6 @@ import axios from "axios";
 import {PATH} from "../consts";
 import router from "../../router";
 
-
-
 const authorizationModule = {
     state:{
        userInfo:[],
@@ -12,7 +10,6 @@ const authorizationModule = {
     mutations:{
         addUserInfo(state, data){
             state.userInfo[0] = data;
-            console.log(data)
             state.userIdToken[0] = data.idToken.jwtToken;
         }
     },
@@ -28,6 +25,13 @@ const authorizationModule = {
             }catch (err){
                 console.log(err);
             }
+        },
+        async refresh({commit}, params){
+            axios.post(PATH+'/refreshToken',JSON.stringify(params))
+                .then(async res => {
+                    commit('addUserInfo',res.data);
+                    localStorage.setItem('userIdToken', res.data.idToken.jwtToken)
+                })
         }
     },
     getters:{
