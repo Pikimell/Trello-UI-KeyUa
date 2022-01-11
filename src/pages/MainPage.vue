@@ -10,13 +10,13 @@
 
 <script>
 import Vue from 'vue'
-import {mapActions} from 'vuex'
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
 import Columns from '../components/Columns'
 import Header from "../components/Header";
 import Spinner from "../components/Spiner";
+import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
   data() {
@@ -26,14 +26,25 @@ export default {
   },
   methods:{
     ...mapActions([
-      'setSpinnerState'
-    ])
+      'setSpinnerState','refresh'
+    ]),
+
+    refreshTokens(){
+      this.refresh({username:this.userInfo[0].idToken.payload.email,tokens:this.userInfo[0]});
+    }
   },
   components: {
     Columns,Header,Spinner
   },
   created() {
     this.setSpinnerState(true);
+  computed:{
+    ...mapGetters([
+        'userInfo'
+    ])
+  },
+  beforeMount() {
+    setInterval(() => this.refreshTokens(), 3500000);
   }
 }
 

@@ -11,6 +11,9 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import UserCard from "../components/UserCard";
 import Vue from "vue";
 import router from "../router";
+import axios from "axios";
+import {mapGetters} from "vuex";
+import {PATH} from "../store/consts";
 export default {
   name: "Header",
   data() {
@@ -20,11 +23,18 @@ export default {
   },
   components:{
     UserCard
+  }, computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods:{
     logOut(){
-      localStorage.setItem('userIdToken', '')
       router.push('sign-in')
+      localStorage.setItem('userIdToken', '')
+      axios.post(PATH + '/signOut',{
+        email: this.userInfo[0].idToken.payload.email
+      })
     }
   },
   beforeMount() {
