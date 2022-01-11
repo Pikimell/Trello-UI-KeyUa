@@ -2,6 +2,7 @@
   <div>
     <Header/>
     <div id="app-body">
+      <Spinner/>
       <Columns />
     </div>
   </div>
@@ -9,12 +10,13 @@
 
 <script>
 import Vue from 'vue'
-import {} from 'vuex'
+import {mapActions} from 'vuex'
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
 import Columns from '../components/Columns'
 import Header from "../components/Header";
+import Spinner from "../components/Spiner";
 export default {
   name: "MainPage",
   data() {
@@ -22,8 +24,16 @@ export default {
       showInputTitle: false
     }
   },
+  methods:{
+    ...mapActions([
+      'setSpinnerState'
+    ])
+  },
   components: {
-    Columns,Header
+    Columns,Header,Spinner
+  },
+  created() {
+    this.setSpinnerState(true);
   }
 }
 

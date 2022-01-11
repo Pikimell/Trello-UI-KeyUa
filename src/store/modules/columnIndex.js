@@ -9,7 +9,7 @@ const columnIndexModule = {
         loadColumnIndexes: (state, colIndex) => {
             state.colIndexes = colIndex;
         },
-        indexingColumns: (state, columns) => {
+        indexingColumns: async(state, columns) => {
             let token = localStorage.getItem('userIdToken')
             let listIndex = [];
             columns.forEach(x=>listIndex.push(x.idColumn))
@@ -29,7 +29,7 @@ const columnIndexModule = {
         delIndexes: (state, idColumn) => {
             state.colIndexes = state.colIndexes.filter(x=> x !== idColumn)
         },
-        refreshInDB: (state) => {
+        refreshInDB: async(state) => {
             let token = localStorage.getItem('userIdToken')
             axios.put(PATH + `/updateIndexes/columns`,{
                 colIndexes: JSON.stringify({
@@ -42,7 +42,7 @@ const columnIndexModule = {
         }
     },
     actions:{
-        loadColumnIndexes: ({commit}) => {
+        loadColumnIndexes: async({commit}) => {
             let token = localStorage.getItem('userIdToken')
             axios.get(PATH + '/getColIndexes',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
@@ -52,14 +52,14 @@ const columnIndexModule = {
                     console.log(error);
                 })
         },
-        indexingColumns: ({commit}, data) => {
+        indexingColumns: async({commit}, data) => {
             commit('indexingColumns',data)
         },
-        pushIndex: ({commit}, idColumn) => {
+        pushIndex: async({commit}, idColumn) => {
             commit('pushIndex',idColumn)
             commit('refreshInDB',idColumn)
         },
-        delIndexes: ({commit},idColumn) => {
+        delIndexes: async({commit},idColumn) => {
             commit('delIndexes',idColumn)
             commit('refreshInDB',idColumn)
         }

@@ -46,14 +46,12 @@
         <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
       </BButton>
     </div>
-    <Spinner/>
   </div>
 </template>
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
 import draggable from 'vuedraggable'
-import MySpinner from "./Spiner";
 
 
 export default {
@@ -66,7 +64,6 @@ export default {
     }
   },
   components: {
-    Spinner: MySpinner,
     Column,draggable
   },
   computed: {
@@ -104,7 +101,7 @@ export default {
         "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
         'loadCardIndexes','setSpinnerState'
     ]),
-    addColumn(props) {
+    async addColumn(props) {
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         myDiv.style.maxHeight = "80px";
@@ -113,9 +110,10 @@ export default {
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title
           }
-          this.pushColumn(col)
-          this.pushIndex(col.idColumn)
-          this.createIndexForCard(col.idColumn)
+          await this.setSpinnerState(true);
+          await this.pushColumn(col)
+          await this.pushIndex(col.idColumn)
+          await this.createIndexForCard(col.idColumn)
         }
       }else{
         myDiv.style.maxHeight = "140px";
@@ -186,6 +184,7 @@ export default {
   position:absolute;
   bottom: 0;
   left:90px;
+  z-index: 11;
 }
 
 
@@ -205,6 +204,7 @@ export default {
   display: flex;
   bottom: 20px;
   position: absolute;
+  z-index: 10;
 }
 
 .footer--btn{

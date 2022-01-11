@@ -88,7 +88,6 @@ export default {
       }
     },
     editTitleColumn() {
-
       if (this.edited) {
         this.dataBtn = '✎';
         if (this.title !== this.editedTitleColumn)
@@ -113,9 +112,7 @@ export default {
 
         await this.delIndexes(this.idColumn)
         await this.delCardIndexes(this.idColumn)
-        await this.setSpinnerState(false);
         this.visibleButtonScroll()
-
       }catch (err){
         console.log(err)
       }
@@ -175,8 +172,10 @@ export default {
     }
   },
   beforeMount() {
-    this.setSpinnerState(true)
     this.getListCard()
+    this.setSpinnerState(false)
+  },
+  destroyed() {
     this.setSpinnerState(false)
   },
   watch: {
