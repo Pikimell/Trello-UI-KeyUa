@@ -38,7 +38,6 @@
           v-bind:key="col.idColumn"
       />
     </draggable>
-
     <div class="foot">
       <BButton id="footer-btn-left" class="footer--btn" pill v-on:click="scrollToDir('left');" >
         <b-icon icon="arrow-left-circle" font-scale="2"></b-icon>
@@ -76,7 +75,8 @@ export default {
         animation: 200,
         group: "columns",
         disabled: false,
-        ghostClass: "ghost"
+        ghostClass: "ghost",
+        loadingPage: false
       };
     },
     validationTitleLength() {
@@ -99,9 +99,9 @@ export default {
     ...mapActions([
         'pushColumn','loadCards',"loadColumns","indexingColumns",
         "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
-        'loadCardIndexes'
+        'loadCardIndexes','setSpinnerState'
     ]),
-    addColumn(props) {
+    async addColumn(props) {
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         myDiv.style.maxHeight = "80px";
@@ -110,9 +110,10 @@ export default {
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title
           }
-          this.pushColumn(col)
-          this.pushIndex(col.idColumn)
-          this.createIndexForCard(col.idColumn)
+          await this.setSpinnerState(true);
+          await this.pushColumn(col)
+          await this.pushIndex(col.idColumn)
+          await this.createIndexForCard(col.idColumn)
         }
       }else{
         myDiv.style.maxHeight = "140px";
@@ -133,14 +134,14 @@ export default {
       }
     }
   },
-  beforeMount() {
-    this.loadColumns()
-    this.loadColumnIndexes()
-    this.loadCards()
-    this.loadCardIndexes();
+  async beforeMount() {
+    await this.loadColumns()
+    await this.loadColumnIndexes()
+    await this.loadCards()
+    await this.loadCardIndexes();
   },
-  mounted(){
-    this.sortListColumn(this.INDEX_COL)
+  async mounted(){
+    await this.sortListColumn(this.INDEX_COL)
   },
   beforeUpdate() {
     this.visibleButtonScroll()
@@ -183,6 +184,7 @@ export default {
   position:absolute;
   bottom: 0;
   left:90px;
+  z-index: 11;
 }
 
 
@@ -202,6 +204,7 @@ export default {
   display: flex;
   bottom: 20px;
   position: absolute;
+  z-index: 10;
 }
 
 .footer--btn{

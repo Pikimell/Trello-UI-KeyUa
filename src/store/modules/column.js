@@ -34,7 +34,7 @@ const columnModule = {
         }
     },
     actions: {
-        loadColumns: ({commit}) => {
+        loadColumns: async ({commit}) => {
             let token = localStorage.getItem('userIdToken')
             axios.get(PATH + '/getColumns',{headers: {"Authorization": `Bearer ${token}`}})
                 .then(function (response) {
@@ -45,13 +45,15 @@ const columnModule = {
                             commit('loadColumns', cols)
                             commit('loadColumnIndexes', colIndex)
                             commit('sortListColumn', colIndex)
+                            return true;
                         })
                 })
                 .catch(function (error) {
                     console.log(error);
+                    return false;
                 })
         },
-        pushColumn: ({commit}, column) => {
+        pushColumn: async ({commit}, column) => {
             let token = localStorage.getItem('userIdToken')
             axios.post(PATH + '/pushColumn', {
                 idColumn: column.idColumn,
@@ -63,7 +65,7 @@ const columnModule = {
                 console.log(error);
             });
         },
-        delColumn: ({commit}, idColumn) => {
+        delColumn: async ({commit}, idColumn) => {
             let token = localStorage.getItem('userIdToken')
             axios.delete(PATH + `/deleteColumn/${idColumn}`,{headers: {"Authorization": `Bearer ${token}`}})
                 .then(()=>{

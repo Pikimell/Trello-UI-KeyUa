@@ -2,6 +2,7 @@
   <div>
     <Header/>
     <div id="app-body">
+      <Spinner/>
       <Columns />
     </div>
   </div>
@@ -14,6 +15,7 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 import Columns from '../components/Columns'
 import Header from "../components/Header";
+import Spinner from "../components/Spiner";
 import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
@@ -24,7 +26,7 @@ export default {
   },
   methods:{
     ...mapActions([
-      'refresh'
+      'setSpinnerState','refresh'
     ]),
 
     refreshTokens(){
@@ -32,8 +34,10 @@ export default {
     }
   },
   components: {
-    Columns,Header
+    Columns,Header,Spinner
   },
+  created() {
+    this.setSpinnerState(true);
   computed:{
     ...mapGetters([
         'userInfo'
