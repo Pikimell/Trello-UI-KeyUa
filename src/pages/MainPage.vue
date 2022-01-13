@@ -38,6 +38,7 @@ export default {
   },
   created() {
     this.setSpinnerState(true);
+  },
   computed:{
     ...mapGetters([
         'userInfo'
