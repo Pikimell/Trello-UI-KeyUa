@@ -1,4 +1,4 @@
-import axios from "axios";
+import {api} from "../../axios";
 import {PATH} from "../consts";
 
 const columnIndexModule = {
@@ -10,15 +10,14 @@ const columnIndexModule = {
             state.colIndexes = colIndex;
         },
         indexingColumns: async(state, columns) => {
-            let token = localStorage.getItem('userIdToken')
             let listIndex = [];
             columns.forEach(x=>listIndex.push(x.idColumn))
             state.colIndexes = listIndex
-            axios.put(PATH + `/updateIndexes/columns`,{
+            api.put(PATH + `/updateIndexes/columns`,{
                 colIndexes: JSON.stringify({
                     columns: listIndex
                 })
-            },{headers: {"Authorization": `Bearer ${token}`}})
+            })
                 .catch(function (error) {
                 console.log(error);
             });
@@ -30,12 +29,11 @@ const columnIndexModule = {
             state.colIndexes = state.colIndexes.filter(x=> x !== idColumn)
         },
         refreshInDB: async(state) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.put(PATH + `/updateIndexes/columns`,{
+            api.put(PATH + `/updateIndexes/columns`,{
                 colIndexes: JSON.stringify({
                     columns: state.colIndexes
                 })
-            },{headers: {"Authorization": `Bearer ${token}`}})
+            })
                 .catch(function (error) {
                 console.log(error);
             });
@@ -43,8 +41,7 @@ const columnIndexModule = {
     },
     actions:{
         loadColumnIndexes: async({commit}) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.get(PATH + '/getColIndexes',{headers: {"Authorization": `Bearer ${token}`}})
+            api.get(PATH + '/getColIndexes')
                 .then(function (response) {
                     commit('loadColumnIndexes', JSON.parse(response.data.Items[0].colIndexes).columns)
                 })

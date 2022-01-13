@@ -1,27 +1,27 @@
 import Vue from "vue"
 import Vuex from 'vuex'
 
-import {columnModule,cardModule,columnIndexModule,cardsIndexModule,authorizationModule} from "./modules";
+import {authorizationModule, cardModule, cardsIndexModule, columnIndexModule, columnModule} from "./modules";
 
 Vue.use(Vuex)
 
 
 export default new Vuex.Store({
-    state:{
-        spinnerState:false
+    state: {
+        spinnerState: false
     },
-    mutations:{
-        setSpinnerState: (state, value)=>{
+    mutations: {
+        setSpinnerState: (state, value) => {
             state.spinnerState = value
         }
     },
-    actions:{
+    actions: {
         setSpinnerState: ({commit}, state) => {
             commit('setSpinnerState', state)
         }
     },
-    getters:{
-        spinnerState(state){
+    getters: {
+        spinnerState(state) {
             return state.spinnerState;
         }
     },

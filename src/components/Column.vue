@@ -103,18 +103,20 @@ export default {
     },
     async delCol() {
       try{
+
         this.setSpinnerState(true)
         let cardsCol = this.CARDS_COL(this.idColumn)
         cardsCol.forEach(x => {
           this.delCard(x.idCard)
         });
         await this.delColumn(this.idColumn)
-
         await this.delIndexes(this.idColumn)
         await this.delCardIndexes(this.idColumn)
+
         this.visibleButtonScroll()
       }catch (err){
         console.log(err)
+
       }
     },
     async newCard() {
@@ -142,7 +144,12 @@ export default {
 
 
     getListCard() {
-      this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
+      try{
+        this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
+      }catch (err){
+        console.log(err)
+      }
+
     }
   },
   data() {

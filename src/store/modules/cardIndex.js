@@ -1,4 +1,4 @@
-import axios from "axios";
+import {api} from "../../axios";
 import {PATH} from "../consts";
 
 const cardsIndexModule = {
@@ -11,14 +11,13 @@ const cardsIndexModule = {
         },
         updateCardIndex: (state, idColumn) => {
             try{
-                let token = localStorage.getItem('userIdToken')
                 let cardsIndex = JSON.stringify({
                     cards: state.cardIndexes.
                     filter(data => data.idIndex === idColumn)[0].cards
                 })
-                axios.put(PATH + `/updateCardsIndexes/${idColumn}`,{
+                api.put(PATH + `/updateCardsIndexes/${idColumn}`,{
                     colIndexes: cardsIndex
-                },{headers: {"Authorization": `Bearer ${token}`}})
+                })
             }catch(err){
                 console.log(err)
             }
@@ -71,8 +70,7 @@ const cardsIndexModule = {
     },
     actions:{
         loadCardIndexes: ({commit}) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.get(PATH + '/getCardIndexes',{headers: {"Authorization": `Bearer ${token}`}})
+            api.get(PATH + '/getCardIndexes')
                 .then(function (response) {
                     let items = response.data.Items.filter(data => data.idIndex !== "columns")
                     items = items.map((indexes) => {
@@ -95,11 +93,9 @@ const cardsIndexModule = {
             commit('updateCardIndex', data.idColumn)
         },
         delCardIndexes: ({commit},idColumn) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.delete(PATH + `/deleteCardIndexes/${idColumn}`,{headers: {"Authorization": `Bearer ${token}`}})
+            api.delete(PATH + `/deleteCardIndexes/${idColumn}`)
                 .then(()=>{
                         commit('delCardIndexes', idColumn)
-
                 }).catch(function (error) {
                 console.log(error);
             });
