@@ -142,6 +142,9 @@ export default {
   },
   async mounted(){
     await this.sortListColumn(this.INDEX_COL)
+    if(this.COLUMNS.length == 0){
+      await this.setSpinnerState(false);
+    }
   },
   beforeUpdate() {
     this.visibleButtonScroll()
