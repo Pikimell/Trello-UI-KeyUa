@@ -17,7 +17,6 @@ export default new Vuex.Store({
     },
     actions:{
         setSpinnerState: ({commit}, state) => {
-            console.log(`Change State Spinner - ${state}`)
             commit('setSpinnerState', state)
         }
     },

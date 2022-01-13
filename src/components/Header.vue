@@ -31,7 +31,7 @@ export default {
   methods:{
     logOut(){
       router.push('sign-in')
-      localStorage.setItem('userIdToken', '')
+      localStorage.setItem('userIdToken', {idToken:{payload:{email:""}}})
       axios.post(PATH + '/signOut',{
         email: this.userInfo[0].idToken.payload.email
       })
