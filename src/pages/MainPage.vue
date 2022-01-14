@@ -37,10 +37,9 @@ export default {
     },
 
     refreshTokens(){
-
       let userEmail = localStorage.getItem('userEmail');
       let refreshToken = localStorage.getItem('userRefreshToken');
-      this.refresh({username: userEmail,tokens:refreshToken});
+      this.refresh({username: userEmail,refreshToken:refreshToken});
     }
   },
   components: {
