@@ -4,13 +4,21 @@ import router from "../../router";
 
 const authorizationModule = {
     state: {
-        userInfo: [],
-        userIdToken: []
+        userInfo: {},
+        userIdToken: ''
     },
     mutations: {
         addUserInfo(state, data) {
-            state.userInfo[0] = data;
-            state.userIdToken[0] = data.idToken.jwtToken;
+            try {
+                state.userInfo = data;
+                state.userIdToken = data.idToken.jwtToken;
+                localStorage.setItem('userIdToken', data.idToken.jwtToken)
+                localStorage.setItem('userRefreshToken', data.refreshToken.token)
+                localStorage.setItem('expTime', data.idToken.payload.exp)
+                localStorage.setItem('userEmail', data.idToken.payload.email)
+            } catch (err) {
+                console.log(err)
+            }
         }
     },
     actions: {
@@ -19,7 +27,6 @@ const authorizationModule = {
                 axios.post(PATH + '/signIn', JSON.stringify(params))
                     .then(async res => {
                         commit('addUserInfo', res.data);
-                        localStorage.setItem('userIdToken', res.data.idToken.jwtToken)
                         router.push('trello_page')
                     })
             } catch (err) {
@@ -27,11 +34,15 @@ const authorizationModule = {
             }
         },
         async refresh({commit}, params) {
-            axios.post(PATH + '/refreshToken', JSON.stringify(params))
-                .then(async res => {
-                    commit('addUserInfo', res.data);
-                    localStorage.setItem('userIdToken', res.data.idToken.jwtToken)
-                })
+            try {
+                console.log('refresh')
+                axios.post(PATH + '/refreshToken', JSON.stringify(params))
+                    .then(async res => {
+                        commit('addUserInfo', res.data);
+                    })
+            } catch (err) {
+                console.log(err)
+            }
         }
     },
     getters: {

@@ -11,9 +11,9 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import UserCard from "../components/UserCard";
 import Vue from "vue";
 import router from "../router";
-import axios from "axios";
+//import {api} from "../axios";
 import {mapGetters} from "vuex";
-import {PATH} from "../store/consts";
+//import {PATH} from "../store/consts";
 
 export default {
   name: "Header",
@@ -31,11 +31,14 @@ export default {
   },
   methods: {
     logOut() {
+      /*api.post(PATH + '/signOut', {
+        email: localStorage.getItem('userEmail')
+      })*/
+      localStorage.setItem('userIdToken', '')
+      localStorage.setItem('userRefreshToken', '')
+      localStorage.setItem('expTime', 0)
+      localStorage.setItem('userEmail', '')
       router.push('sign-in')
-      localStorage.setItem('userIdToken', {idToken: {payload: {email: ""}}})
-      axios.post(PATH + '/signOut', {
-        email: this.userInfo[0].idToken.payload.email
-      })
     }
   },
   beforeMount() {

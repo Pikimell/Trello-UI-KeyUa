@@ -48,6 +48,9 @@
     </div>
   </div>
 </template>
+
+
+
 <script>
 import Column from "./Column";
 import {mapGetters,mapActions} from "vuex";
@@ -116,10 +119,10 @@ export default {
           await this.createIndexForCard(col.idColumn)
         }
       }else{
-        myDiv.style.maxHeight = "140px";
+          myDiv.style.maxHeight = "140px";
       }
-      this.showInputTitle = !this.showInputTitle;
-      this.visibleButtonScroll()
+        this.showInputTitle = !this.showInputTitle;
+        this.visibleButtonScroll()
     },
     visibleButtonScroll(){
       let con = document.getElementById('columns-container')
@@ -135,16 +138,18 @@ export default {
     }
   },
   async beforeMount() {
-    await this.loadColumns()
-    await this.loadColumnIndexes()
-    await this.loadCards()
-    await this.loadCardIndexes();
+    if(localStorage.getItem('userRefreshToken').length > 10){
+      await this.loadColumns()
+      await this.loadColumnIndexes()
+      await this.loadCards()
+      await this.loadCardIndexes();
+    }
   },
   async mounted(){
-    await this.sortListColumn(this.INDEX_COL)
-    if(this.COLUMNS.length == 0){
-      await this.setSpinnerState(false);
-    }
+      await this.sortListColumn(this.INDEX_COL)
+      if (this.COLUMNS.length == 0) {
+        await this.setSpinnerState(false);
+      }
   },
   beforeUpdate() {
     this.visibleButtonScroll()
