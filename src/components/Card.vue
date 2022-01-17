@@ -35,16 +35,17 @@
           variant="outline-primary">
         Add Description to this Card
       </BButton>
-      <b-form-file
-          v-model="file1"
-          :state="Boolean(file1)"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-      ></b-form-file>
-      <BButton
-          @click="download"
-          variant="outline-primary">
-      </BButton>
+
+      <div>
+        <BButton v-b-modal.modal-1 variant="outline-primary">
+          Files
+        </BButton>
+
+        <b-modal id="modal-1" title="Files">
+          <ModalFiles v-bind:idCard="this.card.idCard"/>
+        </b-modal>
+      </div>
+
 
     </div>
 
@@ -55,18 +56,18 @@
 import Vue from "vue";
 import {mapActions} from "vuex";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
+import ModalFiles from "./ModalFiles";
 
 export default {
   name: "Card",
   props: ['card'],
-  computed: {},
+  components: {
+    ModalFiles
+  },
   methods: {
     ...mapActions([
-      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex'
+      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex', 'downloadFile'
     ]),
-    download(){
-      alert('awd');
-    },
     addDesc() {
       console.log(this.file1);
       let card = {
@@ -112,6 +113,7 @@ export default {
       isEditedCard: false,
       dataBtn: '✎',
       newTitle: '',
+      downloadURL: 'https://volodka-trello-files.s3.us-east-2.amazonaws.com/2197420.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAZWKDUOQJEKQTCXE6%2F20220117%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20220117T104544Z&X-Amz-Expires=900&X-Amz-Signature=06a082a4bffe90daefee8587c839446b92d0fc8617b08c7790c7564e6965a951&X-Amz-SignedHeaders=hosts',
       newDescription: '',
       file1: null
     }

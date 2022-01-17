@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from 'vuex'
 
-import {authorizationModule, cardModule, cardsIndexModule, columnIndexModule, columnModule} from "./modules";
+import {authorizationModule, cardModule, cardsIndexModule, columnIndexModule, columnModule, fileModule} from "./modules";
 
 Vue.use(Vuex)
 
@@ -12,6 +12,7 @@ export default new Vuex.Store({
     },
     mutations: {
         setSpinnerState: (state, value) => {
+            console.log('spiner - '+value)
             state.spinnerState = value
         }
     },
@@ -30,6 +31,7 @@ export default new Vuex.Store({
         cardModule,
         columnIndexModule,
         cardsIndexModule,
-        authorizationModule
+        authorizationModule,
+        fileModule
     }
 })

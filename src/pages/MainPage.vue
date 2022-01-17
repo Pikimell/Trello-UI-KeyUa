@@ -1,11 +1,10 @@
 <template>
   <div>
     <Header/>
-    <div id="app-body">
-      <Spinner v-if="authorized"/>
+    <b-overlay :show="this.spinnerState" rounded="sm" id="app-body">
       <Columns v-if="authorized"/>
       <NonAuth v-if="!authorized"/>
-    </div>
+    </b-overlay>
   </div>
 </template>
 
@@ -17,7 +16,6 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import Columns from '../components/Columns'
 import Header from "../components/Header";
 import NonAuth from "../components/NonAuthorizedPage";
-import Spinner from "../components/Spiner";
 import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
@@ -29,7 +27,7 @@ export default {
   },
   methods:{
     ...mapActions([
-      'setSpinnerState','refresh'
+      'setSpinnerState','refresh','loadFiles'
     ]),
 
     getDifferenceInTime(start,end){
@@ -43,17 +41,19 @@ export default {
     }
   },
   components: {
-    Columns,Header,Spinner,NonAuth
+    Columns,Header,NonAuth
   },
   created() {
     this.setSpinnerState(true);
   },
   computed:{
     ...mapGetters([
-        'userInfo'
+        'userInfo','spinnerState'
     ])
   },
   beforeMount() {
+    //TODO
+
     let exp = localStorage.getItem('expTime');
     exp = (exp)?exp:new Date().getTime()/1000;
     let now = new Date().getTime();
@@ -68,7 +68,10 @@ export default {
 
     if(localStorage.getItem('userIdToken').length > 10){
       this.authorized = true;
+      this.loadFiles();
     }
+
+    //TODO
   }
 }
 
