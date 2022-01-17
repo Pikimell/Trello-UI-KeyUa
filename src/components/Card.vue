@@ -35,6 +35,17 @@
           variant="outline-primary">
         Add Description to this Card
       </BButton>
+      <b-form-file
+          v-model="file1"
+          :state="Boolean(file1)"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+      ></b-form-file>
+      <BButton
+          @click="download"
+          variant="outline-primary">
+      </BButton>
+
     </div>
 
   </div>
@@ -53,7 +64,11 @@ export default {
     ...mapActions([
       'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex'
     ]),
+    download(){
+      alert('awd');
+    },
     addDesc() {
+      console.log(this.file1);
       let card = {
         idCard: this.card.idCard,
         title: this.card.title,
@@ -97,7 +112,8 @@ export default {
       isEditedCard: false,
       dataBtn: '✎',
       newTitle: '',
-      newDescription: ''
+      newDescription: '',
+      file1: null
     }
   }
 }
