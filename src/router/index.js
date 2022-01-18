@@ -19,7 +19,7 @@ export default new VueRouter({
         },
         {
             path: '*',
-            redirect: {name: 'signin'}
+            redirect: {name: 'trello'}
         }
     ]
 })

@@ -1,4 +1,4 @@
-import axios from "axios";
+import {api} from "../../axios";
 import {PATH} from "../consts";
 
 const cardModule = {
@@ -16,9 +16,12 @@ const cardModule = {
             function isPrime(card) {
                 return card.idCard === idCard
             }
-
-            let index = state.cards.findIndex(isPrime);
-            state.cards.splice(index, 1)
+            try{
+                let index = state.cards.findIndex(isPrime);
+                state.cards.splice(index, 1)
+            }catch(err){
+                console.log(err);
+            }
         },
         editCard: (state, {idCard, title, desc, idColumn}) => {
             for (let i = 0; i < state.cards.length; i++) {
@@ -33,8 +36,7 @@ const cardModule = {
     },
     actions: {
         loadCards: ({commit}) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.get(PATH + '/getCards',{headers: {"Authorization": `Bearer ${token}`}})
+            api.get(PATH + '/getCards')
                 .then(function (response) {
                     commit('loadCards', response.data.Items)
                 })
@@ -43,14 +45,13 @@ const cardModule = {
                 })
         },
         pushCard: async ({commit}, card) => {
-            let token = localStorage.getItem('userIdToken')
-            await axios.post(PATH + '/pushCard', {
+            await api.post(PATH + '/pushCard', {
                 idCard: card.idCard,
                 idColumn: card.idColumn,
                 title: card.title,
                 description: card.description,
                 indexCard: card.indexCard
-            },{headers: {"Authorization": `Bearer ${token}`}})
+            })
                 .then(()=>{
                     commit('pushCard', card)
                 return "Ok"
@@ -60,8 +61,7 @@ const cardModule = {
             });
         },
         delCard: ({commit}, idCard) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.delete(PATH + `/deleteCard/${idCard}`,{headers: {"Authorization": `Bearer ${token}`}})
+            api.delete(PATH + `/deleteCard/${idCard}`)
                 .then(()=>{
                     commit('delCard', idCard)
             }).catch(function (error) {
@@ -70,13 +70,12 @@ const cardModule = {
 
         },
         updateCard: ({commit}, props) => {
-            let token = localStorage.getItem('userIdToken')
-            axios.put(PATH + `/updateCard/${props.idCard}`, {
+            api.put(PATH + `/updateCard/${props.idCard}`, {
                 idCard: props.idCard,
                 title: props.title,
                 description: props.desc,
                 idColumn: props.idColumn
-            },{headers: {"Authorization": `Bearer ${token}`}}).then(()=>{
+            }).then(()=>{
                     commit('editCard', props)
             }).catch(function (error) {
                 console.log(error);
@@ -85,7 +84,12 @@ const cardModule = {
     },
     getters: {
         CARDS_COL: (state) => (idCol) => {
-            return state.cards.filter(card => card.idColumn === idCol);
+            try{
+                return state.cards.filter(card => card.idColumn === idCol);
+            }catch (err){
+                console.log(err)
+                return [];
+            }
         },
         SORTED_CARDS_COL: (state) => ({idCol, indexCards}) => {
             let listIndex = (indexCards.length > 0) ? indexCards.filter(data => data.idIndex === idCol)[0] : []
@@ -97,6 +101,9 @@ const cardModule = {
                 }
             })
             return result;
+        },
+        CARDS: (state) => {
+            return state.cards
         }
     }
 }

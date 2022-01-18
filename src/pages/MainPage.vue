@@ -1,10 +1,10 @@
 <template>
   <div>
     <Header/>
-    <div id="app-body">
-      <Spinner/>
-      <Columns />
-    </div>
+    <b-overlay :show="this.spinnerState" rounded="sm" id="app-body">
+      <Columns v-if="authorized"/>
+      <NonAuth v-if="!authorized"/>
+    </b-overlay>
   </div>
 </template>
 
@@ -15,37 +15,63 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 import Columns from '../components/Columns'
 import Header from "../components/Header";
-import Spinner from "../components/Spiner";
+import NonAuth from "../components/NonAuthorizedPage";
 import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
   data() {
     return {
-      showInputTitle: false
+      showInputTitle: false,
+      authorized: false
     }
   },
   methods:{
     ...mapActions([
-      'setSpinnerState','refresh'
+      'setSpinnerState','refresh','loadFiles'
     ]),
 
+    getDifferenceInTime(start,end){
+      return Math.floor((end-start/1000));
+    },
+
     refreshTokens(){
-      this.refresh({username:this.userInfo[0].idToken.payload.email,tokens:this.userInfo[0]});
+      let userEmail = localStorage.getItem('userEmail');
+      let refreshToken = localStorage.getItem('userRefreshToken');
+      this.refresh({username: userEmail,refreshToken:refreshToken});
     }
   },
   components: {
-    Columns,Header,Spinner
+    Columns,Header,NonAuth
   },
   created() {
     this.setSpinnerState(true);
   },
   computed:{
     ...mapGetters([
-        'userInfo'
+        'userInfo','spinnerState'
     ])
   },
   beforeMount() {
-    setInterval(() => this.refreshTokens(), 3500000);
+    //TODO
+
+    let exp = localStorage.getItem('expTime');
+    exp = (exp)?exp:new Date().getTime()/1000;
+    let now = new Date().getTime();
+    let delay = this.getDifferenceInTime(now,exp);
+    delay = (delay>50)?delay:50
+
+    console.log(delay)
+    setTimeout(()=>{
+      this.refreshTokens()
+      setInterval(() => this.refreshTokens(), 3500000);
+    }, (delay-240) * 1000)
+
+    if(localStorage.getItem('userIdToken').length > 10){
+      this.authorized = true;
+      this.loadFiles();
+    }
+
+    //TODO
   }
 }
 
@@ -56,7 +82,7 @@ Vue.use(IconsPlugin)
 <style scoped>
 #app-body {
   overflow: scroll;
-  min-height: 90vh;
+  min-height: 94.1vh;
 }
 
 #app-body::-webkit-scrollbar {

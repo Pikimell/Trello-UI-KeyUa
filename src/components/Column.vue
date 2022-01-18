@@ -33,8 +33,10 @@
 
     <div>
       <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
+
       <b-form-input
           v-if="showBtnAdd"
+          :changeTitle="changeTitleCard"
           v-model="titleForNewCard"
           class="inp--new-card"
           placeholder="Enter title for new Card"
@@ -46,7 +48,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import draggable from 'vuedraggable'
 import Card from "./Card";
 
@@ -58,7 +60,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard','setSpinnerState'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard', 'setSpinnerState'
     ]),
     moveCard(data) {
 
@@ -101,20 +103,25 @@ export default {
       }
       this.edited = !this.edited;
     },
+    changeTitleCard(event) {
+      console.log(event)
+    },
     async delCol() {
-      try{
+      try {
+
         this.setSpinnerState(true)
         let cardsCol = this.CARDS_COL(this.idColumn)
         cardsCol.forEach(x => {
           this.delCard(x.idCard)
         });
         await this.delColumn(this.idColumn)
-
         await this.delIndexes(this.idColumn)
         await this.delCardIndexes(this.idColumn)
+
         this.visibleButtonScroll()
-      }catch (err){
+      } catch (err) {
         console.log(err)
+
       }
     },
     async newCard() {
@@ -127,7 +134,7 @@ export default {
           description: ''
         }
 
-        await this.pushCard(card).then(()=>{
+        await this.pushCard(card).then(() => {
           this.pushCardIndex(card)
           this.getListCard()
         })
@@ -142,7 +149,12 @@ export default {
 
 
     getListCard() {
-      this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
+      try {
+        this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
+      } catch (err) {
+        console.log(err)
+      }
+
     }
   },
   data() {
@@ -154,7 +166,8 @@ export default {
       editedTitleColumn: this.title,
       listCards: []
     }
-  }, computed: {
+  },
+  computed: {
     ...mapGetters([
       'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL'
     ]),

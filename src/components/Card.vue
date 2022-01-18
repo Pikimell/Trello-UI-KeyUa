@@ -35,6 +35,18 @@
           variant="outline-primary">
         Add Description to this Card
       </BButton>
+
+      <div>
+        <BButton class="card-btn" v-b-modal="this.card.idCard" variant="outline-primary">
+          Files
+        </BButton>
+
+        <b-modal :id="this.card.idCard" title="Files" size="lg" hide-footer>
+          <ModalFiles v-bind:idCard="this.card.idCard"/>
+        </b-modal>
+      </div>
+
+
     </div>
 
   </div>
@@ -44,14 +56,17 @@
 import Vue from "vue";
 import {mapActions} from "vuex";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
+import ModalFiles from "./ModalFiles";
 
 export default {
   name: "Card",
   props: ['card'],
-  computed: {},
+  components: {
+    ModalFiles
+  },
   methods: {
     ...mapActions([
-      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex'
+      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex', 'downloadFile'
     ]),
     addDesc() {
       let card = {
@@ -97,7 +112,8 @@ export default {
       isEditedCard: false,
       dataBtn: '✎',
       newTitle: '',
-      newDescription: ''
+      newDescription: '',
+      file1: null
     }
   }
 }
@@ -147,6 +163,11 @@ Vue.use(IconsPlugin)
   max-height: 32px;
   margin-left: 5px;
   padding: 0 5px 0 5px;
+}
+
+.card-btn{
+  margin:10px 5px 10px 10px;
+  width: 210px;
 }
 
 p {

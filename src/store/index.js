@@ -1,28 +1,38 @@
 import Vue from "vue"
 import Vuex from 'vuex'
 
-import {columnModule,cardModule,columnIndexModule,cardsIndexModule,authorizationModule} from "./modules";
+import {authorizationModule, cardModule, cardsIndexModule, columnIndexModule, columnModule, fileModule} from "./modules";
 
 Vue.use(Vuex)
 
 
 export default new Vuex.Store({
-    state:{
-        spinnerState:false
+    state: {
+        spinnerState: false,
+        fileSpinnerState: false
     },
-    mutations:{
-        setSpinnerState: (state, value)=>{
+    mutations: {
+        setSpinnerState: (state, value) => {
             state.spinnerState = value
+        },
+        setFileSpinnerState: (state, value) => {
+            state.fileSpinnerState = value
         }
     },
-    actions:{
+    actions: {
         setSpinnerState: ({commit}, state) => {
             commit('setSpinnerState', state)
+        },
+        setFileSpinnerState: ({commit}, state) => {
+            commit('setFileSpinnerState', state)
         }
     },
-    getters:{
-        spinnerState(state){
+    getters: {
+        spinnerState(state) {
             return state.spinnerState;
+        },
+        fileSpinnerState(state) {
+            return state.fileSpinnerState;
         }
     },
     modules: {
@@ -30,6 +40,7 @@ export default new Vuex.Store({
         cardModule,
         columnIndexModule,
         cardsIndexModule,
-        authorizationModule
+        authorizationModule,
+        fileModule
     }
 })
