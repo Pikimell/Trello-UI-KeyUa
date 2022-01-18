@@ -101,6 +101,9 @@ const cardModule = {
                 }
             })
             return result;
+        },
+        CARDS: (state) => {
+            return state.cards
         }
     }
 }

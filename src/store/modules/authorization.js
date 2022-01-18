@@ -13,7 +13,7 @@ const authorizationModule = {
                 state.userInfo = data;
                 state.userIdToken = data.idToken.jwtToken;
                 localStorage.setItem('userIdToken', data.idToken.jwtToken)
-                localStorage.setItem('userRefreshToken', data.refreshToken.token)
+                localStorage.setItem('userRefreshToken', data.refreshToken)
                 localStorage.setItem('expTime', data.idToken.payload.exp)
                 localStorage.setItem('userEmail', data.idToken.payload.email)
             } catch (err) {
@@ -35,9 +35,9 @@ const authorizationModule = {
         },
         async refresh({commit}, params) {
             try {
-                console.log('refresh')
                 axios.post(PATH + '/refreshToken', JSON.stringify(params))
                     .then(async res => {
+                        console.log(res.data)
                         commit('addUserInfo', res.data);
                     })
             } catch (err) {
