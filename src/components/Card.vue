@@ -69,7 +69,6 @@ export default {
       'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex', 'downloadFile'
     ]),
     addDesc() {
-      console.log(this.file1);
       let card = {
         idCard: this.card.idCard,
         title: this.card.title,

@@ -1,4 +1,5 @@
 import {api} from "../../axios";
+import axios from 'axios'
 import {PATH} from "../consts";
 
 const fileModule = {
@@ -39,19 +40,38 @@ const fileModule = {
             })
         },
         uploadFile({commit}, data) {
-            console.log(data.file);
-            api.post(`${PATH}/pushFile`, {file: data.file, idCard: data.idCard, name:data.file.name,type:data.file.type})
-                .then((response) => {
-                    console.log(response)
-                    commit('uploadFile', data)
+            let params = {
+                file: {
+                    name: data.id_file,
+                    type: data.file.type,
+                    idCard: data.idCard,
+                }
+            }
+
+            api.post(`${PATH}/getUploadUrl`, params)
+                .then(response => {
+                    let uploadUrl = response.data.url;
+                    axios.put(uploadUrl, data.file)
+                        .then(() => {
+                            api.post(`${PATH}/pushFile`, {
+                                id_file: data.id_file,
+                                idCard: data.idCard
+                            }).then(() => {
+                                commit('uploadFile', data)
+                            })
+                        }).catch(err => {
+                        console.log(err);
+                    });
+
                 }).catch(err => {
                 console.log(err);
             })
 
         },
         deleteFile({commit}, id_file) {
-            //if ok TODO
-            commit('deleteFile', id_file);
+            api.delete(PATH + `/deleteFile/${id_file}`).then(()=>{
+                commit('deleteFile', id_file);
+            })
         },
         loadFiles: async ({commit}) => {
             api.get(`${PATH}/getFiles`).then((response) => {

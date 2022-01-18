@@ -28,15 +28,17 @@ export default {
   props: ['title'],
   methods: {
     ...mapActions([
-      'downloadFile','deleteFile'
+      'downloadFile','deleteFile','setFileSpinnerState'
     ]),
     download() {
       this.downloadFile(this.title);
     },
     deleteFiles() {
+      this.setFileSpinnerState(false);
       this.deleteFile(this.title)
-      // await todo
-      this.$emit('update')
+      setTimeout(()=>{
+        this.$emit('update')
+      },1000);
     },
     getType() {
       let title = this.title.toString();
@@ -70,6 +72,8 @@ export default {
   },
   beforeMount() {
     this.getType();
+    this.setFileSpinnerState(false);
+    this.$emit('update')
   }
 }
 </script>

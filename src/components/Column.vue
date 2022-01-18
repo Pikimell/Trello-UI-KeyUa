@@ -33,8 +33,16 @@
 
     <div>
       <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
+
+      <FormInput v-if="showBtnAdd"
+                 v-model="titleForNewCard"
+                 class="inp--new-card"
+                 v-bind:placeholder="'Enter title for new Card'"
+                 v-bind:is-validate="validationTitleLenth"/>
+
       <b-form-input
           v-if="showBtnAdd"
+          :changeTitle="changeTitle"
           v-model="titleForNewCard"
           class="inp--new-card"
           placeholder="Enter title for new Card"
@@ -49,11 +57,13 @@
 import {mapGetters, mapActions} from "vuex";
 import draggable from 'vuedraggable'
 import Card from "./Card";
+import FormInput from "./Helper/FormInput";
 
 export default {
   name: "Column",
   props: ['idColumn', 'title'],
   components: {
+    FormInput,
     Card, draggable
   },
   methods: {
@@ -100,6 +110,9 @@ export default {
         this.newTitle = this.editedTitleColumn;
       }
       this.edited = !this.edited;
+    },
+    changeTitle(){
+
     },
     async delCol() {
       try{

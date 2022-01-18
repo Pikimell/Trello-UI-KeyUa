@@ -8,22 +8,31 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        spinnerState: false
+        spinnerState: false,
+        fileSpinnerState: false
     },
     mutations: {
         setSpinnerState: (state, value) => {
-            console.log('spiner - '+value)
             state.spinnerState = value
+        },
+        setFileSpinnerState: (state, value) => {
+            state.fileSpinnerState = value
         }
     },
     actions: {
         setSpinnerState: ({commit}, state) => {
             commit('setSpinnerState', state)
+        },
+        setFileSpinnerState: ({commit}, state) => {
+            commit('setFileSpinnerState', state)
         }
     },
     getters: {
         spinnerState(state) {
             return state.spinnerState;
+        },
+        fileSpinnerState(state) {
+            return state.fileSpinnerState;
         }
     },
     modules: {

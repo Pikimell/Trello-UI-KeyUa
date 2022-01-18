@@ -1,9 +1,17 @@
 <template>
   <div>
 
-    <div class="file-box">
-      <FileCard v-for="file in listFile" v-bind:title="file.id_file" v-bind:key="file.id_file" @update="updateList"/>
-    </div>
+    <b-overlay class="file-box" :show="this.fileSpinnerState" rounded="sm" id="app-body" v-if="listFile.length>0">
+      <FileCard
+          v-for="file in this.FILES.filter(x => x.idCard === this.idCard)"
+          v-bind:title="file.id_file"
+          v-bind:key="file.id_file"
+          @update="updateList"/>
+    </b-overlay>
+
+    <b-overlay :show="this.fileSpinnerState" rounded="sm" class="empty-block" v-if="listFile.length === 0">
+      <h1 class="empty-text">Empty</h1>
+    </b-overlay>
 
     <div class="footer">
       <b-form-file
@@ -40,19 +48,20 @@ export default {
   },
   methods: {
     ...mapActions([
-      'uploadFile'
+      'uploadFile','setFileSpinnerState'
     ]),
     updateList() {
       this.listFile = this.FILES.filter(x => x.idCard === this.idCard)
     },
-    uploadFiles() {
+    async uploadFiles() {
       let file = {
         file: this.file1,
         id_file: this.file1.name,
         idCard: this.idCard
       }
-      this.uploadFile(file);
-      this.updateList()
+      this.setFileSpinnerState(true);
+      await this.uploadFile(file);
+      this.file1 = null;
     },
     selectFile(e) {
       if (e.target.files.length > 0)
@@ -61,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'FILES'
+      'FILES','fileSpinnerState'
     ])
   },
   beforeMount() {
@@ -80,6 +89,7 @@ export default {
   align-content: flex-start;
   overflow-y: auto;
   overflow-x: hidden;
+  min-height: 300px;
 }
 
 
@@ -89,5 +99,17 @@ export default {
 
 .flex-item {
   margin: 10px;
+}
+
+.empty-block{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.empty-text{
+  color: #888888;
 }
 </style>
