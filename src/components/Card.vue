@@ -37,11 +37,11 @@
       </BButton>
 
       <div>
-        <BButton v-b-modal.modal-1 variant="outline-primary">
+        <BButton class="card-btn" v-b-modal="this.card.idCard" variant="outline-primary">
           Files
         </BButton>
 
-        <b-modal id="modal-1" title="Files">
+        <b-modal :id="this.card.idCard" title="Files" size="lg" hide-footer>
           <ModalFiles v-bind:idCard="this.card.idCard"/>
         </b-modal>
       </div>
@@ -165,6 +165,11 @@ Vue.use(IconsPlugin)
   max-height: 32px;
   margin-left: 5px;
   padding: 0 5px 0 5px;
+}
+
+.card-btn{
+  margin:10px 5px 10px 10px;
+  width: 210px;
 }
 
 p {
