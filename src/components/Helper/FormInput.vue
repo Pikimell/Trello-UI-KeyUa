@@ -2,14 +2,14 @@
   <div>
     <input :placeholder="placeholder"
            type="text" v-on:keyup="changeTitleCard"
-           class="inputBox" v-on:change="changeTitleCard" v-model="textInput"
+           class="inputBox" v-model="textInput"
            v-bind:class="{validate: isValidate, invalidate:!isValidate}"
-           @focus="focused = true" @blur="focused = false"
+           @focus="changeFocus"
     >
     <div id="result">
-      <div v-for="card in listCardsTitle()" v-bind:key="card.idCard" v-bind:class="{helper: !focused}" class="items">
-        {{card.title}}
-      </div>
+        <div v-on:click="doFilter(card)" v-for="card in listNames" v-bind:key="card.idCard" v-bind:class="{helper: !focused}" class="items">
+          {{card.title}}
+        </div>
     </div>
   </div>
 </template>
@@ -19,12 +19,12 @@ import {mapGetters} from "vuex";
 
 export default {
   name: "FormInput",
-  props: ['value', 'placeholder'],
+  props: ['value', 'placeholder', 'focused'],
   data() {
     return {
       textInput: '',
       isValidate: false,
-      focused: false
+      listNames: []
     }
   },
   computed: {
@@ -36,12 +36,17 @@ export default {
     changeTitleCard() {
       this.isValidate = this.textInput.length > 3;
       this.$emit('change-title', event.target.value)
+      this.listCardsTitle();
     },
     listCardsTitle() {
-      return this.CARDS.filter(cardX => cardX.title.indexOf(this.textInput) === 0)
+      this.listNames = this.CARDS.filter(cardX => cardX.title.indexOf(this.textInput) === 0)
     },
-    doFilter:()=>{
-      console.log('awd')
+    doFilter(card){
+      this.textInput = card.title;
+      this.$emit('change-focus',false);
+    },
+    changeFocus(){
+      this.$emit('change-focus',true);
     }
   }
 }

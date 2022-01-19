@@ -35,10 +35,11 @@
       <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
       <FormInput
           @change-title="changeTitle"
-          v-if="showBtnAdd"
+          v-if="showBtnAdd" :focused="focused"
           class="inp--new-card"
           placeholder="Enter title for new Card"
           :state="validationTitleLenth"
+          @change-focus="changeStateFocus" @blur="offFocus"
       />
     </div>
 
@@ -62,13 +63,11 @@ export default {
     ...mapActions([
       'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard', 'setSpinnerState', 'deleteFile'
     ]),
-    changeTitle(title){
+    changeTitle(title) {
       this.titleForNewCard = title;
     },
     moveCard(data) {
-
       let card = Object.values(data)[0].element;
-
       if (this.idColumn !== card.idColumn) {
         this.updateCard({
           idCard: card.idCard,
@@ -115,7 +114,7 @@ export default {
         this.setSpinnerState(true)
         let cardsCol = this.CARDS_COL(this.idColumn)
         cardsCol.forEach(x => {
-          for(let objFile of this.FILES.filter(file => file.idCard === x.idCard)){
+          for (let objFile of this.FILES.filter(file => file.idCard === x.idCard)) {
             this.deleteFile(objFile.id_file);
           }
           this.delCard(x.idCard)
@@ -152,8 +151,6 @@ export default {
       }
       this.showBtnAdd = !this.showBtnAdd;
     },
-
-
     getListCard() {
       try {
         this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
@@ -161,6 +158,13 @@ export default {
         console.log(err)
       }
 
+    },
+    changeStateFocus(state){
+      this.focused = state;
+    },
+    offFocus(){
+      alert('awd')
+      //this.$emit('change-focus',true);
     }
   },
   data() {
@@ -170,12 +174,13 @@ export default {
       edited: false,
       dataBtn: '✎',
       editedTitleColumn: this.title,
-      listCards: []
+      listCards: [],
+      focused: true
     }
   },
   computed: {
     ...mapGetters([
-      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL','FILES'
+      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL', 'FILES'
     ]),
     dragOptions() {
       return {
