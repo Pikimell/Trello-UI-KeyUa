@@ -7,9 +7,10 @@
            @focus="changeFocus"
     >
     <div id="result">
-        <div v-on:click="doFilter(card)" v-for="card in listNames" v-bind:key="card.idCard" v-bind:class="{helper: !focused}" class="items">
-          {{card.title}}
-        </div>
+      <div v-on:click="doFilter(card)" v-for="card in listNames" v-bind:key="card.idCard"
+           v-bind:class="{helper: !focused}" class="items">
+        {{ card.title }}
+      </div>
     </div>
   </div>
 </template>
@@ -41,12 +42,12 @@ export default {
     listCardsTitle() {
       this.listNames = this.CARDS.filter(cardX => cardX.title.indexOf(this.textInput) === 0)
     },
-    doFilter(card){
+    doFilter(card) {
       this.textInput = card.title;
-      this.$emit('change-focus',false);
+      this.$emit('change-focus', false);
     },
-    changeFocus(){
-      this.$emit('change-focus',true);
+    changeFocus() {
+      this.$emit('change-focus', true);
     }
   }
 }
@@ -60,28 +61,29 @@ export default {
 }
 
 
-
 #result {
   max-height: 150px;
   overflow-y: auto;
 }
 
-.helper{
+.helper {
   display: none;
 }
-.items{
+
+.items {
   background: #ffffff;
   text-align: left;
   padding: 5px;
   font-size: 20px;
 }
-.items:hover{
+
+.items:hover {
   cursor: pointer;
 }
-items:active{
+
+items:active {
   background-color: red;
 }
-
 
 
 .invalidate:focus-visible {

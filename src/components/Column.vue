@@ -39,7 +39,7 @@
           class="inp--new-card"
           placeholder="Enter title for new Card"
           :state="validationTitleLenth"
-          @change-focus="changeStateFocus" @blur="offFocus"
+          @change-focus="changeStateFocus"
       />
     </div>
 
@@ -157,14 +157,9 @@ export default {
       } catch (err) {
         console.log(err)
       }
-
     },
-    changeStateFocus(state){
+    changeStateFocus(state) {
       this.focused = state;
-    },
-    offFocus(){
-      alert('awd')
-      //this.$emit('change-focus',true);
     }
   },
   data() {
