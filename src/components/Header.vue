@@ -1,5 +1,6 @@
 <template>
   <div id="header">
+    <h1 class="site-title">My Trello</h1>
     <UserCard msg="Username" v-bind:authorized="this.authorized"/>
     <b-button variant="outline-primary" class="m-1" @click="logOut">{{ (authorized) ? 'LogOut' : 'LogIn' }}</b-button>
   </div>
@@ -55,6 +56,8 @@ Vue.use(IconsPlugin)
 </script>
 
 <style scoped>
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab|PT+Sans+Caption&subset=latin,cyrillic);
+
 #header {
   padding: 5px;
   display: flex;
@@ -65,4 +68,13 @@ Vue.use(IconsPlugin)
   position: relative;
   background: #282828;
 }
+
+.site-title{
+  position: absolute;
+  left: 50px;
+  top: 5px;
+  color: #cfedff;
+  font-family: "Roboto Slab","PT Sans Caption","Montserrat Black",Roboto,serif;
+}
+
 </style>
