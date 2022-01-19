@@ -25,7 +25,9 @@
 
     </div>
     <div id="card--body">
-      <p v-if="!isEditedCard && this.card.description.length > 0">{{ card.description }}</p>
+      <div class="desc">
+        <p v-if="!isEditedCard && this.card.description.length > 0">{{ card.description }}</p>
+      </div>
       <b-form-textarea
           v-if="isEditedCard" id="inp-desc"
           v-model="newDescription"/>
@@ -38,11 +40,11 @@
 
       <div>
         <BButton class="card-btn" v-b-modal="this.card.idCard" variant="outline-primary">
-          Files
+          Files {{(fileCount>0)?'('+fileCount+')':''}}
         </BButton>
 
         <b-modal :id="this.card.idCard" title="Files" size="lg" hide-footer>
-          <ModalFiles v-bind:idCard="this.card.idCard"/>
+          <ModalFiles v-bind:idCard="this.card.idCard" @update-count="updateCount"/>
         </b-modal>
       </div>
 
@@ -54,7 +56,7 @@
 
 <script>
 import Vue from "vue";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import ModalFiles from "./ModalFiles";
 
@@ -66,8 +68,11 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex', 'downloadFile'
+      'updateCard', 'delCard', 'pushCardIndex', 'removeIndexCard', 'updateCardIndex', 'downloadFile', 'deleteFile'
     ]),
+    updateCount(){
+      this.getCount();
+    },
     addDesc() {
       let card = {
         idCard: this.card.idCard,
@@ -85,6 +90,10 @@ export default {
       this.delCard(card.idCard)
       this.removeIndexCard(card)
       this.updateCardIndex(card.idColumn)
+
+      for(let objFile of this.FILES.filter(file => file.idCard === card.idCard)){
+        this.deleteFile(objFile.id_file);
+      }
 
       this.$emit('updateView')
     },
@@ -105,7 +114,14 @@ export default {
         this.newDescription = this.card.description;
       }
       this.isEditedCard = !this.isEditedCard;
+    },
+    getCount(){
+      let listFile = this.FILES.filter(file => file.idCard === this.card.idCard)
+      this.fileCount = listFile.length;
     }
+  },
+  computed:{
+    ...mapGetters(['FILES'])
   },
   data() {
     return {
@@ -113,8 +129,12 @@ export default {
       dataBtn: '✎',
       newTitle: '',
       newDescription: '',
-      file1: null
+      fileCount: 0
     }
+  },beforeMount() {
+    this.getCount();
+  },updated() {
+    this.getCount();
   }
 }
 
@@ -132,7 +152,7 @@ Vue.use(IconsPlugin)
 }
 
 #card--body {
-  max-height: 600px;
+  max-height: 300px;
   overflow: auto;
   padding-bottom: 10px;
 }
@@ -170,6 +190,11 @@ Vue.use(IconsPlugin)
   width: 210px;
 }
 
+.desc{
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 p {
   text-align: left;
   padding: 0 10px 0 10px;
@@ -181,5 +206,25 @@ h4 {
   max-width: 180px;
   white-space: nowrap;
   overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(192, 192, 192, 0.93);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.6);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(85, 85, 85, 0.58);
 }
 </style>

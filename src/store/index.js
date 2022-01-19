@@ -12,11 +12,17 @@ export default new Vuex.Store({
         fileSpinnerState: false
     },
     mutations: {
-        setSpinnerState: (state, value) => {
-            state.spinnerState = value
+        setSpinnerState: async (state, value) => {
+            state.spinnerState = value;
+            setTimeout(()=>{
+                state.spinnerState = false;
+            },10000);
         },
-        setFileSpinnerState: (state, value) => {
-            state.fileSpinnerState = value
+        setFileSpinnerState: async (state, value) => {
+            state.fileSpinnerState = value;
+            setTimeout(()=>{
+                state.fileSpinnerState = false;
+            },10000);
         }
     },
     actions: {

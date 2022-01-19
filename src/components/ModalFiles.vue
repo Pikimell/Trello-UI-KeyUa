@@ -5,8 +5,7 @@
       <FileCard
           v-for="file in this.FILES.filter(x => x.idCard === this.idCard)"
           v-bind:title="file.id_file"
-          v-bind:key="file.id_file"
-          @update="updateList"/>
+          v-bind:key="file.id_file"/>
     </b-overlay>
 
     <b-overlay :show="this.fileSpinnerState" rounded="sm" class="empty-block" v-if="listFile.length === 0">
@@ -52,6 +51,7 @@ export default {
     ]),
     updateList() {
       this.listFile = this.FILES.filter(x => x.idCard === this.idCard)
+      this.$emit('update-count');
     },
     async uploadFiles() {
       let file = {
@@ -74,6 +74,9 @@ export default {
     ])
   },
   beforeMount() {
+    this.updateList();
+  },
+  destroyed() {
     this.updateList();
   }
 }

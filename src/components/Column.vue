@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard', 'setSpinnerState'
+      'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard', 'setSpinnerState', 'deleteFile'
     ]),
     moveCard(data) {
 
@@ -112,6 +112,9 @@ export default {
         this.setSpinnerState(true)
         let cardsCol = this.CARDS_COL(this.idColumn)
         cardsCol.forEach(x => {
+          for(let objFile of this.FILES.filter(file => file.idCard === x.idCard)){
+            this.deleteFile(objFile.id_file);
+          }
           this.delCard(x.idCard)
         });
         await this.delColumn(this.idColumn)
@@ -169,7 +172,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL'
+      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL','FILES'
     ]),
     dragOptions() {
       return {

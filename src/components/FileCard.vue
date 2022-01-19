@@ -34,10 +34,10 @@ export default {
       this.downloadFile(this.title);
     },
     deleteFiles() {
-      this.setFileSpinnerState(false);
+      this.setFileSpinnerState(true);
       this.deleteFile(this.title)
       setTimeout(()=>{
-        this.$emit('update')
+        this.setFileSpinnerState(false);
       },1000);
     },
     getType() {
@@ -73,7 +73,6 @@ export default {
   beforeMount() {
     this.getType();
     this.setFileSpinnerState(false);
-    this.$emit('update')
   }
 }
 </script>

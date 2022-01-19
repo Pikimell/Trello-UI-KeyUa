@@ -35,15 +35,16 @@ export default {
     },
 
     refreshTokens(){
-      let userEmail = localStorage.getItem('userEmail');
       let refreshToken = localStorage.getItem('userRefreshToken');
-      this.refresh({username: userEmail,refreshToken:refreshToken});
+      this.refresh({username: '',refreshToken:refreshToken});
     }
   },
   components: {
     Columns,Header,NonAuth
   },
   created() {
+    let refreshToken = localStorage.getItem('userRefreshToken');
+    if(refreshToken.toString().length > 10)
     this.setSpinnerState(true);
   },
   computed:{
@@ -53,22 +54,26 @@ export default {
   },
   beforeMount() {
     //TODO
-
-    let exp = localStorage.getItem('expTime');
-    exp = (exp)?exp:new Date().getTime()/1000;
-    let now = new Date().getTime();
-    let delay = this.getDifferenceInTime(now,exp);
-    delay = (delay>50)?delay:50
-
-    console.log(delay)
-    setTimeout(()=>{
-      this.refreshTokens()
-      setInterval(() => this.refreshTokens(), 3500000);
-    }, (delay-240) * 1000)
-
-    if(localStorage.getItem('userIdToken').length > 10){
+    if(localStorage.getItem('userRefreshToken').length > 10){
       this.authorized = true;
       this.loadFiles();
+    }
+
+    try{
+      let exp = localStorage.getItem('expTime');
+      exp = (exp)?exp:new Date().getTime()/1000;
+      let now = new Date().getTime();
+      let delay = this.getDifferenceInTime(now,exp);
+      delay = (delay>50)?delay:50
+
+      this.refreshTokens()
+      setTimeout(()=>{
+        console.log('refresh')
+        this.refreshTokens()
+        setInterval(() => this.refreshTokens(), 3500000);
+      }, (delay-240) * 1000)
+    }catch (err){
+      console.log(err);
     }
 
     //TODO
