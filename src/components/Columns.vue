@@ -19,7 +19,7 @@
           class="add--col--elem"
           v-on:click="addColumn({
             title:titleNewColumn,
-            state:validationTitleLength
+            state:this.validationTitleLength
           });titleNewColumn='';"
       >
         Create Column
