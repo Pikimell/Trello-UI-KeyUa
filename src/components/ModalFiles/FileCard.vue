@@ -41,7 +41,7 @@ export default {
       },1000);
     },
     getType() {
-      this.validTitle = this.title.toString().substr(13)
+      this.validTitle = this.title.toString().substr(13).replaceAll('_',' ');
       let title = this.title.toString();
       let lastDot = title.lastIndexOf('.');
 
