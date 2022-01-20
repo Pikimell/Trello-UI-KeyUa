@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header/>
+    <Header v-bind:authorized="authorized"/>
     <b-overlay :show="this.spinnerState" rounded="sm" id="app-body">
       <Columns v-if="authorized"/>
       <NonAuth v-if="!authorized"/>
@@ -11,7 +11,7 @@
 <script>
 import Vue from 'vue'
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
-
+import router from "../router";
 
 import Columns from '../components/Column/Columns'
 import Header from "../components/Header/Header";
@@ -54,12 +54,11 @@ export default {
   },
   beforeMount() {
     //TODO
-    if(localStorage.getItem('userRefreshToken').length > 10){
-      this.authorized = true;
-      this.loadFiles();
-    }
-
     try{
+      if(localStorage.getItem('userRefreshToken').length > 10){
+        this.authorized = true;
+        this.loadFiles();
+      }
       let exp = localStorage.getItem('expTime');
       exp = (exp)?exp:new Date().getTime()/1000;
       let now = new Date().getTime();
@@ -73,6 +72,7 @@ export default {
       }, (delay-240) * 1000)
     }catch (err){
       console.log(err);
+      router.push('sign-in');
     }
 
     //TODO

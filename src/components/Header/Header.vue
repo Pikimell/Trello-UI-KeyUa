@@ -18,11 +18,7 @@ import {mapGetters} from "vuex";
 
 export default {
   name: "Header",
-  data() {
-    return {
-      authorized: true
-    }
-  },
+  props: ['authorized'],
   components: {
     UserCard
   }, computed: {
@@ -40,13 +36,6 @@ export default {
       localStorage.setItem('expTime', 0)
       localStorage.setItem('userEmail', '')
       router.push('sign-in')
-    }
-  },
-  beforeMount() {
-    if (localStorage.getItem('userIdToken').length > 10) {
-      this.authorized = true;
-    } else {
-      this.authorized = false;
     }
   }
 }

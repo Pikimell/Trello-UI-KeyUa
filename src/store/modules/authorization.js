@@ -46,7 +46,7 @@ const authorizationModule = {
                 axios.post(PATH + '/signIn', JSON.stringify(params))
                     .then(async res => {
                         commit('addUserInfo', res.data);
-                        router.push('trello_page')
+                        await router.push('trello_page')
                     }).catch(err => {
                         alert('Invalid password!');
                         console.log(err)

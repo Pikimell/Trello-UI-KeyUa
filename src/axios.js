@@ -1,9 +1,21 @@
 import axios from "axios";
-import router from "./router";
-
+import router from './router'
 const api = axios.create();
 
 api.interceptors.request.use(config => {
+    let refreshToken = localStorage.getItem('userRefreshToken');
+    const time = localStorage.getItem('expTime');
+    const tokenLife = Number(time) - Date.now() / 1000;
+
+    if(tokenLife < 10){
+        if(refreshToken)
+            this.refresh({username: '',refreshToken:refreshToken});
+        else {
+            localStorage.setItem('userRefreshToken','');
+            router.push('sign-in');
+        }
+    }
+
     const token = localStorage.getItem('userIdToken');
     config.headers = {"Authorization": `Bearer ${token}`};
     return config;
@@ -11,15 +23,9 @@ api.interceptors.request.use(config => {
     console.log(error);
 });
 
+
 api.interceptors.response.use(config => {
     const token = localStorage.getItem('userIdToken');
-    const time = localStorage.getItem('expTime');
-    const tokenLife = Number(time) - Date.now() / 1000;
-
-    if (tokenLife <= 1000 || token == null) {
-        //refresh();
-    }
-
     if (token) {
         config.headers = {
             Authorization: `Bearer ${token}`
@@ -34,7 +40,6 @@ api.interceptors.response.use(config => {
     return config;
 }, error => {
     console.log(error);
-    router.push('sign-in');
 })
 
 export {

@@ -39,7 +39,7 @@ export default {
   align-content: flex-start;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: 300px;
+  min-height: 150px;
 }
 
 .empty-block{
@@ -47,7 +47,7 @@ export default {
   align-content: center;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  height: 150px;
 }
 
 .empty-text{
