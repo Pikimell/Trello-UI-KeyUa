@@ -33,14 +33,13 @@
 
     <div>
       <BButton class="but--new-card" v-on:click="newCard">Add Card</BButton>
-
-      <b-form-input
-          v-if="showBtnAdd"
-          :changeTitle="changeTitleCard"
-          v-model="titleForNewCard"
+      <FormInput
+          @change-title="changeTitle"
+          v-if="showBtnAdd" :focused="focused"
           class="inp--new-card"
           placeholder="Enter title for new Card"
           :state="validationTitleLenth"
+          @change-focus="changeStateFocus"
       />
     </div>
 
@@ -50,22 +49,25 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import draggable from 'vuedraggable'
-import Card from "./Card";
+import Card from "../Card/Card";
+import FormInput from "../Helper/FormInput";
 
 export default {
   name: "Column",
   props: ['idColumn', 'title'],
   components: {
+    FormInput,
     Card, draggable
   },
   methods: {
     ...mapActions([
       'pushCard', 'delColumn', 'editTitleCol', 'delCard', 'delIndexes', 'delCardIndexes', 'pushCardIndex', 'rewriteIndex', 'updateCard', 'setSpinnerState', 'deleteFile'
     ]),
+    changeTitle(title) {
+      this.titleForNewCard = title;
+    },
     moveCard(data) {
-
       let card = Object.values(data)[0].element;
-
       if (this.idColumn !== card.idColumn) {
         this.updateCard({
           idCard: card.idCard,
@@ -92,7 +94,7 @@ export default {
     editTitleColumn() {
       if (this.edited) {
         this.dataBtn = '✎';
-        if (this.title !== this.editedTitleColumn)
+        if (this.title !== this.editedTitleColumn && this.editedTitleColumn.length > 2)
           this.editTitleCol({
             idColumn: this.idColumn,
             title: this.editedTitleColumn
@@ -103,16 +105,13 @@ export default {
       }
       this.edited = !this.edited;
     },
-    changeTitleCard(event) {
-      console.log(event)
-    },
     async delCol() {
       try {
 
         this.setSpinnerState(true)
         let cardsCol = this.CARDS_COL(this.idColumn)
         cardsCol.forEach(x => {
-          for(let objFile of this.FILES.filter(file => file.idCard === x.idCard)){
+          for (let objFile of this.FILES.filter(file => file.idCard === x.idCard)) {
             this.deleteFile(objFile.id_file);
           }
           this.delCard(x.idCard)
@@ -149,15 +148,15 @@ export default {
       }
       this.showBtnAdd = !this.showBtnAdd;
     },
-
-
     getListCard() {
       try {
         this.listCards = this.SORTED_CARDS_COL({idCol: this.idColumn, indexCards: this.INDEX_CARDS})
       } catch (err) {
         console.log(err)
       }
-
+    },
+    changeStateFocus(state) {
+      this.focused = state;
     }
   },
   data() {
@@ -167,12 +166,13 @@ export default {
       edited: false,
       dataBtn: '✎',
       editedTitleColumn: this.title,
-      listCards: []
+      listCards: [],
+      focused: true
     }
   },
   computed: {
     ...mapGetters([
-      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL','FILES'
+      'CARDS_COL', 'INDEX_CARDS', 'SORTED_CARDS_COL', 'FILES'
     ]),
     dragOptions() {
       return {
@@ -218,6 +218,9 @@ export default {
   border-radius: 10px;
   border: 1px solid grey;
   margin: 1%;
+  -webkit-box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
+  -moz-box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
+  box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
 }
 
 .ghost {
@@ -252,6 +255,10 @@ export default {
   font-size: 20px;
   padding-left: 10px;
   background-color: rgba(35, 42, 65, 0.99);
+}
+
+#out-title:hover{
+  cursor: pointer;
 }
 
 #out-title {

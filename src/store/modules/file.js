@@ -23,12 +23,13 @@ const fileModule = {
     },
     actions: {
         downloadFile(context, filename) {
+
             api.get(`${PATH}/getFile/${filename}`).then(response => {
                 let fileURL = response.data.uploadURL;
                 let fileLink = document.createElement("a");
                 fileLink.href = fileURL;
 
-                const fileName = 'file.' + 'format';//TODO
+                const fileName = `${filename}`.substring(13);
 
                 fileLink.setAttribute("download", fileName);
                 document.body.appendChild(fileLink);
@@ -39,14 +40,14 @@ const fileModule = {
                 console.log(err);
             })
         },
-        uploadFile({commit}, data) {
-            let params = {
-                file: {
-                    name: data.id_file,
-                    type: data.file.type,
-                    idCard: data.idCard,
-                }
+        async uploadFile({commit}, data) {
+            let file = {
+                name: `${Date.now()}${data.id_file}`,
+                type: data.file.type,
+                idCard: data.idCard,
             }
+            let params = {file};
+            data.id_file = file.name;
 
             api.post(`${PATH}/getUploadUrl`, params)
                 .then(response => {
@@ -54,22 +55,24 @@ const fileModule = {
                     axios.put(uploadUrl, data.file)
                         .then(() => {
                             api.post(`${PATH}/pushFile`, {
-                                id_file: data.id_file,
+                                id_file: file.name,
                                 idCard: data.idCard
                             }).then(() => {
                                 commit('uploadFile', data)
+                                return 'ok';
                             })
                         }).catch(err => {
                         console.log(err);
+                        return 'err';
                     });
-
                 }).catch(err => {
                 console.log(err);
+                return 'err';
             })
 
         },
         deleteFile({commit}, id_file) {
-            api.delete(PATH + `/deleteFile/${id_file}`).then(()=>{
+            api.delete(PATH + `/deleteFile/${id_file}`).then(() => {
                 commit('deleteFile', id_file);
             })
         },

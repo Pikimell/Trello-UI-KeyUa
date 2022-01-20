@@ -13,9 +13,9 @@ import Vue from 'vue'
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 
-import Columns from '../components/Columns'
-import Header from "../components/Header";
-import NonAuth from "../components/NonAuthorizedPage";
+import Columns from '../components/Column/Columns'
+import Header from "../components/Header/Header";
+import NonAuth from "../components/Auth/NonAuthorizedPage";
 import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
