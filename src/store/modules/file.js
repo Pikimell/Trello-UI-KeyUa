@@ -42,7 +42,7 @@ const fileModule = {
         },
         async uploadFile({commit}, data) {
             let file = {
-                name: `${Date.now()}${data.id_file}`,
+                name: `${Date.now()}${data.id_file.replaceAll(' ','_')}`,
                 type: data.file.type,
                 idCard: data.idCard,
             }
