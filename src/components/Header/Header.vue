@@ -9,9 +9,9 @@
 <script>
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
-import UserCard from "../components/UserCard";
+import UserCard from "./UserCard";
 import Vue from "vue";
-import router from "../router";
+import router from "../../router";
 //import {api} from "../axios";
 import {mapGetters} from "vuex";
 //import {PATH} from "../store/consts";

@@ -49,8 +49,8 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import draggable from 'vuedraggable'
-import Card from "./Card";
-import FormInput from "./Helper/FormInput";
+import Card from "../Card/Card";
+import FormInput from "../Helper/FormInput";
 
 export default {
   name: "Column",
@@ -94,7 +94,7 @@ export default {
     editTitleColumn() {
       if (this.edited) {
         this.dataBtn = '✎';
-        if (this.title !== this.editedTitleColumn)
+        if (this.title !== this.editedTitleColumn && this.editedTitleColumn.length > 2)
           this.editTitleCol({
             idColumn: this.idColumn,
             title: this.editedTitleColumn
@@ -104,9 +104,6 @@ export default {
         this.newTitle = this.editedTitleColumn;
       }
       this.edited = !this.edited;
-    },
-    changeTitleCard(event) {
-      console.log(event)
     },
     async delCol() {
       try {
@@ -221,6 +218,9 @@ export default {
   border-radius: 10px;
   border: 1px solid grey;
   margin: 1%;
+  -webkit-box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
+  -moz-box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
+  box-shadow: 0 5px 9px 2px rgba(74, 84, 92, 0.7);
 }
 
 .ghost {
@@ -255,6 +255,10 @@ export default {
   font-size: 20px;
   padding-left: 10px;
   background-color: rgba(35, 42, 65, 0.99);
+}
+
+#out-title:hover{
+  cursor: pointer;
 }
 
 #out-title {

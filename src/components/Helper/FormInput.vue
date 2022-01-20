@@ -44,6 +44,7 @@ export default {
     },
     doFilter(card) {
       this.textInput = card.title;
+      this.isValidate = this.textInput.length > 3;
       this.$emit('change-focus', false);
     },
     changeFocus() {

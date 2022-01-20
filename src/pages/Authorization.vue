@@ -8,7 +8,7 @@
 
 <script>
 
-import LoginForm from '../components/LoginForm'
+import LoginForm from '../components/Auth/LoginForm'
 
 export default {
   name: "Autorization",

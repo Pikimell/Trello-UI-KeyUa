@@ -1,8 +1,8 @@
 <template>
   <div class="file">
     <div class="header">
-      <h5 class="title" v-b-tooltip.hover :title="this.title">
-        {{ this.title }}
+      <h5 class="title" v-b-tooltip.hover :title="this.validTitle">
+        {{ this.validTitle }}
       </h5>
       <b-icon :icon="this.type" font-scale="1" class="image-type"></b-icon>
     </div>
@@ -41,6 +41,7 @@ export default {
       },1000);
     },
     getType() {
+      this.validTitle = this.title.toString().substr(13)
       let title = this.title.toString();
       let lastDot = title.lastIndexOf('.');
 
@@ -59,6 +60,7 @@ export default {
   },
   data() {
     return {
+      validTitle: '',
       type: 'text',
       dataType: {
         file_text: ['txt', 'pdf', 'word'],
