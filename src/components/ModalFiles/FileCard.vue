@@ -64,7 +64,7 @@ export default {
       type: 'text',
       dataType: {
         file_text: ['txt', 'pdf', 'word'],
-        file_image: ['png', 'jpeg', 'jpg', 'svg', 'psd'],
+        file_image: ['png', 'jpeg', 'jpg', 'svg', 'psd', 'gif'],
         file_music: ['mp3', 'waw'],
         camera_video: ['mp4', 'avi'],
         file_code: ['js', 'cpp', 'py', 'css', 'html', 'json', 'bat', 'cmd'],
