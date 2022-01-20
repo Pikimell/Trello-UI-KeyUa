@@ -68,7 +68,6 @@ export default {
 
       this.refreshTokens()
       setTimeout(()=>{
-        console.log('refresh')
         this.refreshTokens()
         setInterval(() => this.refreshTokens(), 3500000);
       }, (delay-240) * 1000)

@@ -1,4 +1,6 @@
 import axios from "axios";
+import router from "./router";
+
 const api = axios.create();
 
 api.interceptors.request.use(config => {
@@ -12,7 +14,7 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(config => {
     const token = localStorage.getItem('userIdToken');
     const time = localStorage.getItem('expTime');
-    const tokenLife = Number(time) - Date.now()/1000;
+    const tokenLife = Number(time) - Date.now() / 1000;
 
     if (tokenLife <= 1000 || token == null) {
         //refresh();
@@ -31,7 +33,8 @@ api.interceptors.response.use(config => {
 
     return config;
 }, error => {
-    console.log(error)
+    console.log(error);
+    router.push('sign-in');
 })
 
 export {

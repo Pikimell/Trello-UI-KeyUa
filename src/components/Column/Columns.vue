@@ -148,9 +148,9 @@ export default {
   async mounted(){
       await this.sortListColumn(this.INDEX_COL)
       if (this.COLUMNS.length == 0) {
-        await setTimeout(()=>{
+        setTimeout(() => {
           this.setSpinnerState(false);
-        },5000)
+        }, 5000)
       }
   },
   beforeUpdate() {

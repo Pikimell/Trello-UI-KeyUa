@@ -21,9 +21,10 @@
           ✕
         </BButton>
       </div>
-
-
     </div>
+
+    <hr>
+
     <div id="card--body">
       <div class="desc" @click="showDetailsCard">
         <p v-if="!isEditedCard && this.card.description.length > 0">{{ card.description }}</p>
@@ -31,6 +32,7 @@
       <b-form-textarea
           v-if="isEditedCard" id="inp-desc"
           v-model="newDescription"/>
+      <hr>
       <BButton
           v-if="this.card.description.length === 0 && !isEditedCard"
           @click="addDesc" class="card-btn"
@@ -222,6 +224,11 @@ h4 {
   max-width: 180px;
   white-space: nowrap;
   overflow: hidden;
+}
+
+hr{
+  margin: 0;
+  padding: 0;
 }
 
 ::-webkit-scrollbar {
