@@ -63,13 +63,13 @@ export default {
       exp = (exp)?exp:new Date().getTime()/1000;
       let now = new Date().getTime();
       let delay = this.getDifferenceInTime(now,exp);
-      delay = (delay>50)?delay:50
+      delay = (delay>300)?delay:0
 
       this.refreshTokens()
       setTimeout(()=>{
         this.refreshTokens()
         setInterval(() => this.refreshTokens(), 3500000);
-      }, (delay-240) * 1000)
+      }, delay * 1000)
     }catch (err){
       console.log(err);
       router.push('sign-in');

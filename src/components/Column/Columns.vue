@@ -102,7 +102,7 @@ export default {
     ...mapActions([
         'pushColumn','loadCards',"loadColumns","indexingColumns",
         "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
-        'loadCardIndexes','setSpinnerState'
+        'loadCardIndexes','setSpinnerState','refresh'
     ]),
     async addColumn(props) {
       let myDiv = document.getElementById("add--col")
@@ -135,19 +135,38 @@ export default {
         buttons[0].style.visibility = "hidden";
         buttons[1].style.visibility = "hidden";
       }
+    },
+    getDifferenceInTime(start,end){
+      return Math.floor((end-start/1000));
     }
   },
   async beforeMount() {
-    if(localStorage.getItem('userRefreshToken').length > 10){
+    let exp = localStorage.getItem('expTime');
+    exp = (exp)?exp:new Date().getTime()/1000;
+    let now = new Date().getTime();
+    let delay = this.getDifferenceInTime(now,exp);
+    delay = (delay>300)?delay:0
+
+    if(localStorage.getItem('userRefreshToken').length > 10 && delay>300){
       await this.loadColumns()
       await this.loadColumnIndexes()
-      await this.loadCards()
-      await this.loadCardIndexes();
+      this.loadCards()
+      this.loadCardIndexes();
+    }else{
+      let refreshToken = localStorage.getItem('userRefreshToken');
+      await this.refresh({username: '', refreshToken: refreshToken});
+      setTimeout(()=>{
+        this.loadColumns()
+        this.loadColumnIndexes()
+        this.loadCards()
+        this.loadCardIndexes();
+      },3000)
+
     }
   },
   async mounted(){
       await this.sortListColumn(this.INDEX_COL)
-      if (this.COLUMNS.length == 0) {
+      if (this.COLUMNS.length === 0) {
         setTimeout(() => {
           this.setSpinnerState(false);
         }, 5000)

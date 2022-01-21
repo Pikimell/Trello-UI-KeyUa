@@ -56,8 +56,10 @@ const authorizationModule = {
                 axios.post(PATH + '/refreshToken', JSON.stringify(params))
                     .then(async res => {
                         commit('addUserInfoRefresh', res.data);
+                        return true;
                     }).catch(err => {
                         console.log(err)
+                    return false;
                 })
         }
     },

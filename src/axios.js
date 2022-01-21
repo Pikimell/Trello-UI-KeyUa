@@ -10,11 +10,10 @@ api.interceptors.request.use(config => {
     if(tokenLife < 10){
         if(refreshToken)
             this.refresh({username: '',refreshToken:refreshToken});
-        else {
-            localStorage.setItem('userRefreshToken','');
-            router.push('sign-in');
-        }
     }
+
+    if(refreshToken == null)
+        router.push('sign-in');
 
     const token = localStorage.getItem('userIdToken');
     config.headers = {"Authorization": `Bearer ${token}`};
