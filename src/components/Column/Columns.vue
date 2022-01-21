@@ -39,10 +39,10 @@
       />
     </draggable>
     <div class="foot">
-      <BButton id="footer-btn-left" class="footer--btn" pill v-on:click="scrollToDir('left');" >
+      <BButton id="footer-btn-left" class="footer--btn" pill v-on:click="scrollToDir('left');">
         <b-icon icon="arrow-left-circle" font-scale="2"></b-icon>
       </BButton>
-      <BButton id="footer-btn-right" class="footer--btn" pill v-on:click="scrollToDir('right');" >
+      <BButton id="footer-btn-right" class="footer--btn" pill v-on:click="scrollToDir('right');">
         <b-icon icon="arrow-right-circle" font-scale="2"></b-icon>
       </BButton>
     </div>
@@ -50,10 +50,9 @@
 </template>
 
 
-
 <script>
 import Column from "./Column";
-import {mapGetters,mapActions} from "vuex";
+import {mapGetters, mapActions} from "vuex";
 import draggable from 'vuedraggable'
 
 
@@ -67,11 +66,11 @@ export default {
     }
   },
   components: {
-    Column,draggable
+    Column, draggable
   },
   computed: {
     ...mapGetters([
-        'COLUMNS','INDEX_COL'
+      'COLUMNS', 'INDEX_COL'
     ]),
     dragOptions() {
       return {
@@ -86,29 +85,29 @@ export default {
       return this.titleNewColumn.length > 2
     }
   },
-  methods:{
-    scrollToDir(dir){
+  methods: {
+    scrollToDir(dir) {
       let container = document.getElementById('columns-container')
-      if(dir==="left"){
+      if (dir === "left") {
         container.scrollLeft = 0;
-      }else{
+      } else {
         container.scrollLeft = container.scrollWidth;
       }
     },
-    moveCol(){
+    moveCol() {
       this.indexingColumns(this.COLUMNS)
       this.sortListColumn(this.INDEX_COL);
     },
     ...mapActions([
-        'pushColumn','loadCards',"loadColumns","indexingColumns",
-        "pushIndex","loadColumnIndexes","sortListColumn",'createIndexForCard',
-        'loadCardIndexes','setSpinnerState','refresh'
+      'pushColumn', 'loadCards', "loadColumns", "indexingColumns",
+      "pushIndex", "loadColumnIndexes", "sortListColumn", 'createIndexForCard',
+      'loadCardIndexes', 'setSpinnerState', 'refresh'
     ]),
     async addColumn(props) {
       let myDiv = document.getElementById("add--col")
       if (this.showInputTitle) {
         myDiv.style.maxHeight = "80px";
-        if (props.state){
+        if (props.state) {
           let col = {
             idColumn: 'id' + (new Date()).getTime(),
             title: props.title
@@ -118,59 +117,64 @@ export default {
           await this.pushIndex(col.idColumn)
           await this.createIndexForCard(col.idColumn)
         }
-      }else{
-          myDiv.style.maxHeight = "140px";
+      } else {
+        myDiv.style.maxHeight = "140px";
       }
-        this.showInputTitle = !this.showInputTitle;
-        this.visibleButtonScroll()
+      this.showInputTitle = !this.showInputTitle;
+      this.visibleButtonScroll()
     },
-    visibleButtonScroll(){
+    visibleButtonScroll() {
       let con = document.getElementById('columns-container')
       let buttons = document.getElementsByClassName('footer--btn')
 
-      if(con.scrollWidth > con.offsetWidth){
-        buttons[0].style.visibility = "visible";
-        buttons[1].style.visibility = "visible";
-      }else{
-        buttons[0].style.visibility = "hidden";
-        buttons[1].style.visibility = "hidden";
-      }
+      if (buttons.length === 2)
+        if (con.scrollWidth > con.offsetWidth) {
+          if (buttons[0].style) {
+            buttons[0].style.visibility = "visible";
+            buttons[1].style.visibility = "visible";
+          }
+        } else {
+          if (buttons[0].style) {
+            buttons[0].style.visibility = "hidden";
+            buttons[1].style.visibility = "hidden";
+          }
+        }
     },
-    getDifferenceInTime(start,end){
-      return Math.floor((end-start/1000));
+    getDifferenceInTime(start, end) {
+      return Math.floor((end - start / 1000));
     }
   },
   async beforeMount() {
     let exp = localStorage.getItem('expTime');
-    exp = (exp)?exp:new Date().getTime()/1000;
+    exp = (exp) ? exp : new Date().getTime() / 1000;
     let now = new Date().getTime();
-    let delay = this.getDifferenceInTime(now,exp);
-    delay = (delay>300)?delay:0
+    let delay = this.getDifferenceInTime(now, exp);
+    delay = (delay > 300) ? delay : 0
 
-    if(localStorage.getItem('userRefreshToken').length > 10 && delay>300){
+    if (localStorage.getItem('userRefreshToken').length > 10 && delay > 300) {
       await this.loadColumns()
       await this.loadColumnIndexes()
       this.loadCards()
       this.loadCardIndexes();
-    }else{
+    } else {
       let refreshToken = localStorage.getItem('userRefreshToken');
       await this.refresh({username: '', refreshToken: refreshToken});
-      setTimeout(()=>{
+      setTimeout(() => {
         this.loadColumns()
         this.loadColumnIndexes()
         this.loadCards()
         this.loadCardIndexes();
-      },3000)
+      }, 3000)
 
     }
   },
-  async mounted(){
-      await this.sortListColumn(this.INDEX_COL)
-      if (this.COLUMNS.length === 0) {
-        setTimeout(() => {
-          this.setSpinnerState(false);
-        }, 5000)
-      }
+  async mounted() {
+    await this.sortListColumn(this.INDEX_COL)
+    if (this.COLUMNS.length === 0) {
+      setTimeout(() => {
+        this.setSpinnerState(false);
+      }, 5000)
+    }
   },
   beforeUpdate() {
     this.visibleButtonScroll()
@@ -180,8 +184,8 @@ export default {
 
 <style scoped>
 
-#columns-container{
-  margin:0;
+#columns-container {
+  margin: 0;
   width: 100%;
   overflow-x: auto;
   flex-wrap: nowrap;
@@ -210,16 +214,16 @@ export default {
   flex-wrap: wrap;
   min-width: 300px;
   max-height: 80px;
-  position:absolute;
+  position: absolute;
   bottom: 0;
-  left:90px;
+  left: 90px;
   z-index: 11;
 }
 
 
 .ghost {
   opacity: 0.1;
-  background-color: rgba(150,255,150,50%);
+  background-color: rgba(150, 255, 150, 50%);
 }
 
 .add--col--elem {
@@ -227,8 +231,8 @@ export default {
   max-height: 40px;
 }
 
-.foot{
-  width:100%;
+.foot {
+  width: 100%;
   height: 50px;
   display: flex;
   bottom: 20px;
@@ -236,20 +240,22 @@ export default {
   z-index: 10;
 }
 
-.footer--btn{
+.footer--btn {
   opacity: 0.3;
-  padding: 3px 3px 0 3px ;
+  padding: 3px 3px 0 3px;
 }
-.footer--btn:hover{
+
+.footer--btn:hover {
   opacity: 1;
 }
 
-#footer-btn-left{
+#footer-btn-left {
   position: absolute;
-  left:30px
+  left: 30px
 }
-#footer-btn-right{
+
+#footer-btn-right {
   position: absolute;
-  right:30px ;
+  right: 30px;
 }
 </style>

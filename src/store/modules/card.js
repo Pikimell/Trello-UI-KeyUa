@@ -92,7 +92,7 @@ const cardModule = {
             }
         },
         SORTED_CARDS_COL: (state) => ({idCol, indexCards}) => {
-            let listIndex = (indexCards.length > 0) ? indexCards.filter(data => data.idIndex === idCol)[0] : []
+            let listIndex = (indexCards.length > 0) ? indexCards.filter(data => data.idIndex === idCol)[0] : {cards:[]}
             let result = []
             listIndex.cards.forEach(idCard => {
                 let cards = state.cards.filter(card => card.idCard === idCard);

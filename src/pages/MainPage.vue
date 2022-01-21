@@ -44,8 +44,8 @@ export default {
   },
   created() {
     let refreshToken = localStorage.getItem('userRefreshToken');
-    if(refreshToken.toString().length > 10)
-    this.setSpinnerState(true);
+    if(refreshToken && refreshToken.toString().length > 10)
+      this.setSpinnerState(true);
   },
   computed:{
     ...mapGetters([
@@ -53,7 +53,6 @@ export default {
     ])
   },
   beforeMount() {
-    //TODO
     try{
       if(localStorage.getItem('userRefreshToken').length > 10){
         this.authorized = true;
@@ -74,8 +73,6 @@ export default {
       console.log(err);
       router.push('sign-in');
     }
-
-    //TODO
   }
 }
 
