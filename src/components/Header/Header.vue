@@ -12,9 +12,7 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import UserCard from "./UserCard";
 import Vue from "vue";
 import router from "../../router";
-//import {api} from "../axios";
 import {mapGetters} from "vuex";
-//import {PATH} from "../store/consts";
 
 export default {
   name: "Header",
@@ -28,9 +26,6 @@ export default {
   },
   methods: {
     logOut() {
-      /*api.post(PATH + '/signOut', {
-        email: localStorage.getItem('userEmail')
-      })*/
       localStorage.setItem('userIdToken', '')
       localStorage.setItem('userRefreshToken', '')
       localStorage.setItem('expTime', 0)

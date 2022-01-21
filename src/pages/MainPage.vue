@@ -44,7 +44,7 @@ export default {
   },
   created() {
     let refreshToken = localStorage.getItem('userRefreshToken');
-    if(refreshToken && refreshToken.toString().length > 10)
+    if(refreshToken !== null && refreshToken.toString().length > 10)
       this.setSpinnerState(true);
   },
   computed:{
