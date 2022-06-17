@@ -1,41 +1,77 @@
 <template>
-  <div id="app-body">
-    <Columns
-        :columns="cols"
-        v-on:newColumn="addColumn"
-        :showInputTitle="showInputTitle"/>
+  <div>
+    <Header v-bind:authorized="authorized"/>
+    <b-overlay :show="this.spinnerState" rounded="sm" id="app-body">
+      <Columns v-if="authorized"/>
+      <NonAuth v-if="!authorized"/>
+    </b-overlay>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+import router from "../router";
 
-
-import Columns from '../components/Columns'
-
+import Columns from '../components/Column/Columns'
+import Header from "../components/Header/Header";
+import NonAuth from "../components/Auth/NonAuthorizedPage";
+import {mapActions,mapGetters} from "vuex";
 export default {
   name: "MainPage",
-  data(){
+  data() {
     return {
-      cols: [],
-      showInputTitle: false
+      showInputTitle: false,
+      authorized: false
+    }
+  },
+  methods:{
+    ...mapActions([
+      'setSpinnerState','refresh','loadFiles'
+    ]),
+
+    getDifferenceInTime(start,end){
+      return Math.floor((end-start/1000));
+    },
+
+    refreshTokens(){
+      let refreshToken = localStorage.getItem('userRefreshToken');
+      this.refresh({username: '',refreshToken:refreshToken});
     }
   },
   components: {
-    Columns
+    Columns,Header,NonAuth
   },
-  methods:{
-    addColumn(props){
-      if(this.showInputTitle){
-        if(props.state)
-          this.cols.push({
-          idColumn:'id' + (new Date()).getTime(),
-          title: props.title,
-          cards:[]
-        })
+  created() {
+    let refreshToken = localStorage.getItem('userRefreshToken');
+    if(refreshToken !== null && refreshToken.toString().length > 10)
+      this.setSpinnerState(true);
+  },
+  computed:{
+    ...mapGetters([
+        'userInfo','spinnerState'
+    ])
+  },
+  beforeMount() {
+    try{
+      if(localStorage.getItem('userRefreshToken').length > 10){
+        this.authorized = true;
+        this.loadFiles();
       }
-      this.showInputTitle = !this.showInputTitle;
+      let exp = localStorage.getItem('expTime');
+      exp = (exp)?exp:new Date().getTime()/1000;
+      let now = new Date().getTime();
+      let delay = this.getDifferenceInTime(now,exp);
+      delay = (delay>300)?delay:0
+
+      this.refreshTokens()
+      setTimeout(()=>{
+        this.refreshTokens()
+        setInterval(() => this.refreshTokens(), 3500000);
+      }, delay * 1000)
+    }catch (err){
+      console.log(err);
+      router.push('sign-in');
     }
   }
 }
@@ -45,10 +81,11 @@ Vue.use(IconsPlugin)
 </script>
 
 <style scoped>
-#app-body{
-  max-width: 1920px;
+#app-body {
   overflow: scroll;
+  min-height: 94.1vh;
 }
+
 #app-body::-webkit-scrollbar {
   width: 0;
   height: 0;
